@@ -1,0 +1,94 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+    font-family: 'poppin';
+    src: url('./assets/font/Poppins-Regular.ttf');
+}
+
+:root{
+    --app-green-dark: #0a6373;
+    --app-green: #0f857d;
+    --app-green-opacity: #0f857d92;
+    --app-green-classic: #1ba39a;
+    --app-light-loading-bar: #0db7df;
+    --unseen-noti-color: #F84F31;
+    --light-white-color: #dce8ff;
+    --btn-disabled-color: #bcc0c7;
+}
+
+body, body *{
+    font-family: 'poppin';
+}
+::-webkit-scrollbar{
+    width: 5px;
+    height: 5px;
+    border-radius: 5px;
+}
+::-webkit-scrollbar-thumb{
+    background-color: #0f7b8f5f;
+}
+.header{
+    z-index: 99;
+}
+.main-view{
+    background: url('./assets/img/img-bg-02.webp') no-repeat;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+}
+.main-view .view{
+    position: relative;
+}
+.main-view .mask{
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 0;
+}
+.service-lab{
+    font-size: 45px;
+    font-weight: 900;
+    /* -webkit-text-stroke-width: 1px;
+  -webkit-text-stroke-color: #073f49; */
+    background: -webkit-linear-gradient(20deg,#33c6bc,#0f857d, #0a6373);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.btn{
+    background-color: var(--app-green);
+    color: var(--light-white-color);
+}
+.api-icon-v{
+    background-size: cover;
+    background-position: center;
+    background-size: 80%;
+    background-repeat: no-repeat;
+}
+.google-api{
+    background-image: url('./assets/img/google-api-icon.svg');
+}
+.facebook-api{
+    background-image: url('./assets/img/facebook-api-icon.svg');
+}
+.shopify-api{
+    background-image: url('./assets/img/shopify-api-icon.svg');
+}
+
+.tool-field-wrapper{
+    height: 350px;
+    position: relative;
+}
+.float-box{
+    position: absolute;
+}
+.float-box.lt{
+    top: 0;
+    left: 0;
+}
+.float-box.rb{
+    right: 0;
+    bottom: 0;
+}
