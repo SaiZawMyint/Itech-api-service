@@ -9,7 +9,7 @@
 
 :root{
     --app-green-dark: #0a6373;
-    --app-green: #0f857d;
+    --app-green: #10b0d8;
     --app-green-opacity: #0f857d92;
     --app-green-classic: #1ba39a;
     --app-light-loading-bar: #0db7df;
@@ -52,7 +52,7 @@ body, body *{
     font-weight: 900;
     /* -webkit-text-stroke-width: 1px;
   -webkit-text-stroke-color: #073f49; */
-    background: -webkit-linear-gradient(20deg,#33c6bc,#0f857d, #0a6373);
+    background: -webkit-linear-gradient(20deg,#10b0d8,#14ccff, #03065d);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
@@ -91,4 +91,35 @@ body, body *{
 .float-box.rb{
     right: 0;
     bottom: 0;
+}
+.bg-mask{
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background-image: url('./assets/img/img-bg-02.webp') ;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    top: 0;
+    z-index: -1;
+}
+.itech-bluegreen-gradient {
+    background: -webkit-linear-gradient(center, #01a99b50 10%, #0698b190 360%);
+    /* Chrome 10+, Saf5.1+ */
+    background: -moz-linear-gradient(center, #01a99c50 10%, #0698b190 360%);
+    /* FF3.6+ */
+    background: linear-gradient(center, #01a99b90 10%, #0698b190 360%);
+    /* W3C */
+}
+
+.modal{
+    top: 0;
+    left: 0;
+    z-index: 999;
+    box-shadow: inset 0 1px 0 0 hsl(0deg 0% 100% / 5%);
+}
+.modal-box{
+    position: relative;
+    transition: all .2s cubic-bezier(0.075, 0.82, 0.165, 1);
+    box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
 }
