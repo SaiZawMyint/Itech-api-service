@@ -24,10 +24,41 @@ const userModule = {
         }
     }
 }
-
+const spreadsheetModule = {
+    state: ()=>({
+        data:[]
+    }),
+    actions: {
+        async createProject({commit}, payload){
+            return axiosClient.post('/project',payload).then(({data})=>{
+                if(data.ok) commit('storeProject', data.data)
+                return data
+            }).catch((err)=>{
+                return {ok:false,error:err}
+            })
+        },
+        async getSpreadsheetProjects({commit}){
+            return axiosClient.get('/project').then(({ data }) => {
+                if (data.ok) commit('putProject', data.data)
+                return data
+            }).catch((err) => {
+                return { ok: false, error: err }
+            })
+        }
+    },
+    mutations: {
+        storeProject: (state,data)=>{
+            state.data.push(data)
+        },
+        putProject: (state,data)=>{
+            state.data = data
+        }
+    }
+}
 const store = createStore({
     modules: {
-        user: userModule
+        user: userModule,
+        spreadsheet: spreadsheetModule
     }
 })
 

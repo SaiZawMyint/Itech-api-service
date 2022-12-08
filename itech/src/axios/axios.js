@@ -2,7 +2,7 @@ import axios from "axios";
 import store from "../store/store";
 
 const axiosClient = axios.create({
-    baseURL: `http://localhost:8001/itech/api/`
+    baseURL: `http://localhost:8001/itech/api`
 })
 axiosClient.interceptors.request.use(config=>{
     config.headers.Authorization = `Bearer ${store.state.user.token}`

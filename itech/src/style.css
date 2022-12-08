@@ -15,11 +15,16 @@
     --app-light-loading-bar: #0db7df;
     --unseen-noti-color: #F84F31;
     --light-white-color: #dce8ff;
-    --btn-disabled-color: #bcc0c7;
+    --btn-disabled-bg: #bcc0c7;
+    --btn-disabled-color: #393d44;
 }
 
 body, body *{
     font-family: 'poppin';
+}
+input:focus{
+    outline: none;
+    
 }
 ::-webkit-scrollbar{
     width: 5px;
@@ -111,7 +116,13 @@ body, body *{
     background: linear-gradient(center, #01a99b90 10%, #0698b190 360%);
     /* W3C */
 }
-
+.btn.primary{
+    background-color: var(--app-green);
+}
+.btn.secondary{
+    background-color: var(--btn-disabled-bg);
+    color: var(--btn-disabled-color);
+}
 .modal{
     top: 0;
     left: 0;
@@ -122,4 +133,37 @@ body, body *{
     position: relative;
     transition: all .2s cubic-bezier(0.075, 0.82, 0.165, 1);
     box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+}
+.alert-enter-active {
+    animation: fade 0.3s;
+}
+.alert-leave-active {
+    animation: fade 0.3s reverse;
+}
+.alert-enter-active .modal-box {
+    animation: alert 0.3s;
+}
+.alert-leave-active .modal-box {
+    animation: alert 0.3s reverse;
+}
+@keyframes fade {
+    from{
+        opacity: 0;
+    }
+    to{
+        opacity: 1;
+    }
+}
+@keyframes alert {
+    0% {
+        transform: scale(0);
+    }
+
+    50% {
+        transform: scale(1.15);
+    }
+
+    100% {
+        transform: scale(1);
+    }
 }
