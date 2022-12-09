@@ -13,7 +13,7 @@ const userModule = {
                 if(data.ok) commit('storeLoginData',data)
                 return data;
             }).catch((err)=>{
-                return {ok:false,error:err}
+                return {ok:false,error:err.response.data.message}
             })
         }
     },
@@ -34,7 +34,7 @@ const spreadsheetModule = {
                 if(data.ok) commit('storeProject', data.data)
                 return data
             }).catch((err)=>{
-                return {ok:false,error:err}
+                return err.response.data
             })
         },
         async getSpreadsheetProjects({commit}){
@@ -48,7 +48,10 @@ const spreadsheetModule = {
     },
     mutations: {
         storeProject: (state,data)=>{
-            state.data.push(data)
+            for(let d of state.data){
+                delete d.active
+            }
+            state.data.push(Object.assign(data, {active: true}))
         },
         putProject: (state,data)=>{
             state.data = data

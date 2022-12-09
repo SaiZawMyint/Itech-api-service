@@ -80,6 +80,9 @@ const login = function(){
   store.dispatch('login',user).then((res)=>{
     if(res.ok){
       router.push({'name':'top'})
+    }else{
+      console.log(res)
+      error.value=res
     }
   })
 }

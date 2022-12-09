@@ -34,8 +34,8 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import itech from '../../../js/itech';
+import { onMounted, ref } from 'vue'
+import itech from '../../../../js/itech';
 
 const props = defineProps({
     data: {
@@ -110,10 +110,10 @@ const changeHandler = function(index){
 
 //active class
 const activeClass = function(index){
-  let res = 'hover:bg-green-300/30 hover:text-green-600';
+  let res = 'hover:bg-[#0db7df]/30 hover:text-[#0db7df]';
   if('active' in lists.value[index]){
     if(lists.value[index].active){
-      res= 'bg-green-300/30 text-green-600 hover:bg-green-300/30 hover:text-green-600 cursor-not-allowed'
+      res= 'bg-[#0db7df]/30 text-[#0db7df] hover:bg-[#0db7df]/30 hover:text-[#0db7df] cursor-not-allowed'
     }
   }
   if('isUsed' in lists.value[index] && lists.value[index].isUsed){
@@ -129,6 +129,14 @@ const commentData = function(index){
   }
   return res
 }
+
+onMounted(()=>{
+  props.data.forEach(d=>{
+    if(d.active){
+      selectedList.value = d
+    }
+  })
+})
 </script>
 <style>
 .itech-helper-slide-right-enter-active,

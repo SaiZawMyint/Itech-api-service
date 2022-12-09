@@ -10,6 +10,7 @@
 :root{
     --app-green-dark: #0a6373;
     --app-green: #10b0d8;
+    --app-green-hov: #10b0d8aa;
     --app-green-opacity: #0f857d92;
     --app-green-classic: #1ba39a;
     --app-light-loading-bar: #0db7df;
@@ -119,6 +120,9 @@ input:focus{
 .btn.primary{
     background-color: var(--app-green);
 }
+.btn.primary:hover{
+    background-color: var(--app-green-hov);
+}
 .btn.secondary{
     background-color: var(--btn-disabled-bg);
     color: var(--btn-disabled-color);
@@ -134,6 +138,13 @@ input:focus{
     transition: all .2s cubic-bezier(0.075, 0.82, 0.165, 1);
     box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
 }
+
+.fade-enter-active,
+.fade-leave-active{
+    transition: all .4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    opacity: 0;
+}
+
 .alert-enter-active {
     animation: fade 0.3s;
 }

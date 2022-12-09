@@ -36,15 +36,17 @@
         </div>
     </div>
     <Transition name="alert">
-        <ModalBox :title="setUpBox.title" v-if="setUpBox.show" :show="setUpBox.show" @on-close="setUpBox.show = false"
-            width="40%">
+        <ModalBox :title="setUpBox.title" height="min-h-[300px]" v-if="setUpBox.show" :show="setUpBox.show" @on-close="setUpBox.show = false"
+            width="w-[40%]">
             <template v-slot:content>
-                <div class="w-full p-4">
-                    <SelectWidget :data="projectsData.data" :max="{height:'max-h-[100px]'}" @changes="changesHandler"
-                        placeholder="Select Project">
-                    </SelectWidget>
-                    <span class="text-sm px-2 text-gray-400">Select Project</span>
-                    <form @submit.prevent="createProject" class="my-4 px-2" id="create-project-form">
+                <div class="w-full p-4 relative z-10">
+                    <div class="my-2" v-if="!showCreateForm">
+                        <span class="text-sm px-2 text-gray-400">Select Project</span>
+                        <SelectWidget :data="projectsData.data" :max="{height:'max-h-[150px]'}" @changes="changesHandler"
+                            placeholder="Select Project">
+                        </SelectWidget>
+                    </div>
+                    <form @submit.prevent="createProject" class="my-4 px-2" id="create-project-form" v-if="showCreateForm">
                         <div class="flex">
                             <div class="w-[30%] pr-2">
                                 <label for="pj-name" class="text-slate-700 my-2 text-sm">Project Name</label>
@@ -58,10 +60,11 @@
                                     id="pj-json" type="file" accept="application/JSON">
                             </div>
                         </div>
+                        
                         <div class="w-full py-4 flex items-center">
                             <button 
                             type="submit"
-                            class="p-1 ring-blue-200 ring-2 btn primary rounded-md flex items-center">
+                            class="p-2 bg-slate-300 hover:bg-slate-300/40 text-slate-800 rounded-md flex items-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                     stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -69,26 +72,31 @@
                                 </svg>
                                 <span class="px-2">Create</span>
                             </button>
+                            <span class="px-2 text-sm" :class="createWatcher.error ? 'text-red-800':'text-green-800'" v-if="createWatcher.show"
+                                v-html="createWatcher.message"></span>
                         </div>
                     </form>
+                    <a href="#" @click.prevent="showCreateForm = !showCreateForm" class="px-2 block pt-4 text-sm text-blue-400 underline">{{showCreateForm ? "Choose Project":"Create Project"}}</a>
                 </div>
             </template>
             <template v-slot:footer>
                 <div class="flex items-center justify-end p-4">
-                    <button class="px-3 py-1 ring-slate-200 ring-2 hover:bg-slate-400 rounded-lg ml-4">Cancel</button>
-                    <button class="px-3 py-1 ring-slate-200 ring-2 btn primary rounded-lg ml-4">Open API</button>
+                    <button class="px-3 py-2 ring-slate-200 ring-2 hover:bg-slate-400 rounded-lg ml-4" @click="setUpBox.show = false">Cancel</button>
+                    <button class="px-4 py-2 ring-slate-200 ring-2 rounded-lg ml-4"
+                    :class="spreadsheetSelectedProject.data ? 'btn primary ':'bg-slate-400 text-slate-800 cursor-not-allowed'"
+                    >Select</button>
                 </div>
             </template>
         </ModalBox>
     </Transition>
-
 </template>
 <script setup>
 import { onMounted, ref } from 'vue';
 import ModalBox from '../LightUI/ModalBox.vue';
-import SelectWidget from '../itech/SelectWidget.vue';
+import SelectWidget from '../itech/Widgets/SelectWidget.vue';
 import itechObject from '../../../js/itech-objects'
 import { useStore } from 'vuex';
+import itech from '../../../js/itech';
 
 const store = useStore()
 
@@ -96,6 +104,8 @@ const setUpBox = ref({
     show: false,
     title: ''
 });
+const showCreateForm = ref(false)
+
 const projectsData = ref({
     data: store.state.spreadsheet.data,
     error: false,
@@ -111,9 +121,13 @@ const createProjectForm = ref({
     authProvider: null,
     redirectURIs: [],
 })
-
-const changesHandler = function(){
-    
+const spreadsheetSelectedProject = ref({
+    data: null
+})
+const changesHandler = function(data){
+    spreadsheetSelectedProject.value.data = data
+    let index = (itechObject(projectsData.value.data).find(data.id, 'id'))
+    projectsData.value.data[index] = data
 }
 
 const setup = function(service){
@@ -142,16 +156,43 @@ const projectJSON = function(e){
 const validateSpreadsheetClient = function(json){
     
 }
+const createWatcher = ref({
+    show: false,
+    error: false,
+    message: "",
+})
 const createProject = function(){
     store.dispatch('createProject',createProjectForm.value).then((res)=>{
         if(res.ok){
             document.getElementById('create-project-form').reset()
+            createProjectForm.value = {}
+            createWatcher.value.show = true
+            createWatcher.value.error = false
+            showCreateForm.value = false
+            console.log(res)
+            changesHandler(res.data)
+        }else{
+            createWatcher.value.show = true
+            createWatcher.value.error = true
+            createWatcher.value.message = res.error
         }
+
+        itech().wait(4000, () => {}, () => {
+            createWatcher.value.show = false
+            createWatcher.value.error = false
+            createWatcher.value.message = ""
+        })
+
     })
 }
 onMounted(()=>{
     store.dispatch('getSpreadsheetProjects').then((res)=>{
-        projectsData.value.data = res.data
+        if(res.data.length == 0){
+            projectsData.value.data = [{id: -1, name: "No project created!",isUsed: true}]
+        }else{
+            projectsData.value.data = res.data
+        }
     })
+
 })
 </script>

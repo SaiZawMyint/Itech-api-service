@@ -3,19 +3,20 @@
         <div class="w-full max-w-[85%] flex items-center justify-between header mx-auto">
 
             <div class="logo flex items-end justify-start">
-                <img src="@img/logo-02.svg" alt="Itech business logo mb-1" class="w-[50px]">
+                <router-link :to="{name:'top'}">
+                    <img src="@img/logo-02.svg" alt="Itech business logo mb-1" class="w-[50px]">
+                </router-link>
                 <h1 class="px-2 text-xl font-bold">Services</h1>
             </div>
             <div class="flex items-center justify-center">
-                <router-link :to="{name: 'top'}"
+                <router-link :to="{name: 'services'}"
                     class="rounded-full flex items-center justify-start px-2 py-1 hover:font-bold hover:text-[#0f857d] mr-2"
-                    :class="route.name == `home` ? 'text-[#0f857d] font-bold':''">
+                    :class="route.name == `itech.home` ? 'text-[#0f857d] font-bold':''">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="w-4 h-4">
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M2.25 12l8.954-8.955c.44-.439 1.152-.439 1.591 0L21.75 12M4.5 9.75v10.125c0 .621.504 1.125 1.125 1.125H9.75v-4.875c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21h4.125c.621 0 1.125-.504 1.125-1.125V9.75M8.25 21h8.25" />
                     </svg>
-
                     <span class="px-2">Home</span>
                 </router-link>
                 <button
