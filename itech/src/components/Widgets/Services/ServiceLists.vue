@@ -16,7 +16,7 @@
         </div>
         <div class="w-full grid grid-cols-4 grid-flow-col gap-2">
             <button class="rounded-lg max-w-[250px] ring-blue-300 focus:ring-2 overflow-hidden border-2 shadow flex flex-col m-4 cursor-pointer
-            hover:shadow-lg" @click="setup(`Google Spreadsheet API`)">
+            hover:shadow-lg" @click="setup(`spreadsheet`)">
                 <div class="w-full">
                     <img src="@img/google-spreadsheet-api-logo.png" alt="" class="block w-full">
                 </div>
@@ -36,22 +36,23 @@
         </div>
     </div>
     <Transition name="alert">
-        <ModalBox :title="setUpBox.title" height="min-h-[300px]" v-if="setUpBox.show" :show="setUpBox.show" @on-close="setUpBox.show = false"
-            width="w-[40%]">
+        <ModalBox :title="setUpBox.title" height="min-h-[300px]" v-if="setUpBox.show" :show="setUpBox.show"
+            @on-close="setUpBox.show = false" width="w-[40%]">
             <template v-slot:content>
                 <div class="w-full p-4 relative z-10">
                     <div class="my-2" v-if="!showCreateForm">
                         <span class="text-sm px-2 text-gray-400">Select Project</span>
-                        <SelectWidget :data="projectsData.data" :max="{height:'max-h-[150px]'}" @changes="changesHandler"
-                            placeholder="Select Project">
+                        <SelectWidget :data="projectsData.data" :max="{height:'max-h-[150px]'}"
+                            @changes="changesHandler" placeholder="Select Project">
                         </SelectWidget>
                     </div>
-                    <form @submit.prevent="createProject" class="my-4 px-2" id="create-project-form" v-if="showCreateForm">
+                    <form @submit.prevent="createProject" class="my-4 px-2" id="create-project-form"
+                        v-if="showCreateForm">
                         <div class="flex">
                             <div class="w-[30%] pr-2">
                                 <label for="pj-name" class="text-slate-700 my-2 text-sm">Project Name</label>
-                                <input v-model="createProjectForm.name" name="project-name" id="pj-name" type="text" class="px-3 py-2 rounded text-sm w-full"
-                                    placeholder="Name">
+                                <input v-model="createProjectForm.name" name="project-name" id="pj-name" type="text"
+                                    class="px-3 py-2 rounded text-sm w-full" placeholder="Name">
                             </div>
                             <div class="w-[70%] pl-2">
                                 <label for="pj-json" class="text-slate-700 my-2 text-sm">Google Client Json</label>
@@ -60,11 +61,10 @@
                                     id="pj-json" type="file" accept="application/JSON">
                             </div>
                         </div>
-                        
+
                         <div class="w-full py-4 flex items-center">
-                            <button 
-                            type="submit"
-                            class="p-2 bg-slate-300 hover:bg-slate-300/40 text-slate-800 rounded-md flex items-center">
+                            <button type="submit"
+                                class="p-2 bg-slate-300 hover:bg-slate-300/40 text-slate-800 rounded-md flex items-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                     stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -72,19 +72,25 @@
                                 </svg>
                                 <span class="px-2">Create</span>
                             </button>
-                            <span class="px-2 text-sm" :class="createWatcher.error ? 'text-red-800':'text-green-800'" v-if="createWatcher.show"
-                                v-html="createWatcher.message"></span>
+                            <span class="px-2 text-sm" :class="createWatcher.error ? 'text-red-800':'text-green-800'"
+                                v-if="createWatcher.show" v-html="createWatcher.message"></span>
                         </div>
                     </form>
-                    <a href="#" @click.prevent="showCreateForm = !showCreateForm" class="px-2 block pt-4 text-sm text-blue-400 underline">{{showCreateForm ? "Choose Project":"Create Project"}}</a>
+                    <a href="#" @click.prevent="showCreateForm = !showCreateForm"
+                        class="px-2 block pt-4 text-sm text-blue-400 underline">{{showCreateForm ? "ChooseProject":"Create Project"}}</a>
                 </div>
             </template>
             <template v-slot:footer>
                 <div class="flex items-center justify-end p-4">
-                    <button class="px-3 py-2 ring-slate-200 ring-2 hover:bg-slate-400 rounded-lg ml-4" @click="setUpBox.show = false">Cancel</button>
-                    <button class="px-4 py-2 ring-slate-200 ring-2 rounded-lg ml-4"
-                    :class="spreadsheetSelectedProject.data ? 'btn primary ':'bg-slate-400 text-slate-800 cursor-not-allowed'"
-                    >Select</button>
+                    <button class="px-3 py-2 ring-slate-200 ring-2 hover:bg-slate-400 rounded-lg ml-4"
+                        @click="setUpBox.show = false">Cancel</button>
+                    <button 
+                    @click="openAPI"
+                    v-if="spreadsheetSelectedProject.data" class="px-4 py-2 ring-slate-200 ring-2 rounded-lg ml-4 btn primary">Select</button>
+                    <span v-else
+                        class="px-4 py-2 ring-slate-200 ring-2 rounded-lg ml-4 bg-slate-400 text-slate-800 cursor-not-allowed">
+                        Select
+                        </span>
                 </div>
             </template>
         </ModalBox>
@@ -99,10 +105,12 @@ import { useStore } from 'vuex';
 import itech from '../../../js/itech';
 
 const store = useStore()
+const router = useRouter()
 
 const setUpBox = ref({
     show: false,
-    title: ''
+    title: '',
+    type: ''
 });
 const showCreateForm = ref(false)
 
@@ -133,6 +141,7 @@ const changesHandler = function(data){
 const setup = function(service){
     setUpBox.value.show = true;
     setUpBox.value.title = service
+    
 }
 const projectJSON = function(e){
     const [file] = e.target.files
@@ -185,6 +194,10 @@ const createProject = function(){
 
     })
 }
+const openAPI = function(){
+    store.dispatch(`addService`,{type: setUpBox.value.title, data: spreadsheetSelectedProject.value.data})
+    router.push({name: 'itech.service',params:{service: setUpBox.value.title,id: spreadsheetSelectedProject.value.data.id}})
+}
 onMounted(()=>{
     store.dispatch('getSpreadsheetProjects').then((res)=>{
         if(res.data.length == 0){
@@ -195,4 +208,5 @@ onMounted(()=>{
     })
 
 })
+import { useRouter } from 'vue-router';
 </script>

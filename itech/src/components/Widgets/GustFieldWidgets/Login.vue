@@ -5,8 +5,8 @@
       <img class="mx-auto h-[150px] w-auto" src="@img/logo-02.svg" alt="Sushi">
     </div>
     <form class="mt-8 space-y-6 w-full" @submit.prevent="login">
-      <div v-if="error" class="flex items-start justify-between px-2 py-3 bg-red-100 text-red-500 rounded">
-        <span class="max-w-[80%]" v-html="error.error"></span>
+      <div v-if="error" class="flex items-start justify-between px-2 py-2 bg-red-100 text-red-500 rounded">
+        <span class="max-w-[80%]" v-html="error"></span>
         <span @click="error = null"
           class="w-8 h-8 flex itech-rotate-180 items-center justify-center rounded-full transition-colors cursor-pointer hover:bg-[rgba(0,0,0,0.2)]">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -82,7 +82,7 @@ const login = function(){
       router.push({'name':'top'})
     }else{
       console.log(res)
-      error.value=res
+      error.value="Invalid username or password!"
     }
   })
 }

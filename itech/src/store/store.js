@@ -20,7 +20,24 @@ const userModule = {
     mutations: {
         storeLoginData: (state,data)=>{
             state.data = data
-            sessionStorage.setItem("TOKEN",data.data.accessToken)
+            state.token = data.data.accessToken
+        }
+    }
+}
+const servicesModule = {
+    state: ()=>({
+        type: '',
+        data: {},
+    }),
+    actions: {
+        addService({commit},service = {data:'',type: ''}){
+            if(service) commit('storeService',service)
+        }
+    },
+    mutations:{
+        storeService: (state,service)=>{
+            state.data = service.data
+            state.type = service.type
         }
     }
 }
@@ -58,10 +75,40 @@ const spreadsheetModule = {
         }
     }
 }
+const authModule = {
+    state: ()=>({
+        
+    }),
+    actions: {
+        async requestAuth({commit},id){
+            return axiosClient.get(`/auth/request/code/${id}?service=SPREADSHEET`).then((res)=>{
+                console.log(res)
+                return res.data
+            })
+        },
+        async authorize({commit},data){
+            const configs = {
+                headers:{
+                    service: data.service
+                }
+            }
+            return axiosClient.post(`/auth/authorize/${data.id}`,{'code':data.code},configs).then(({data})=>{
+                return data
+            }).catch((err)=>{
+                return err
+            })
+        }
+    },
+    mutations: {
+
+    }
+}
 const store = createStore({
     modules: {
         user: userModule,
-        spreadsheet: spreadsheetModule
+        auth: authModule,
+        spreadsheet: spreadsheetModule,
+        services: servicesModule
     }
 })
 

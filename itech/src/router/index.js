@@ -5,7 +5,8 @@ import SetUp from '../views/SetUp.vue'
 import Home from '../components/Widgets/GustFieldWidgets/Home.vue'
 import Login from '../components/Widgets/GustFieldWidgets/Login.vue'
 
-import ServiceLists from '../components/Widgets/InformationCheckUp/ServiceLists.vue'
+import ServiceLists from '../components/Widgets/Services/ServiceLists.vue'
+import ToolDashboard from '../components/Widgets/Services/APITools/ToolDashboard.vue'
 import store from '../store/store'
 
 
@@ -21,36 +22,40 @@ const routes = [
             },
             {
                 path: '/join', name: 'join', component: Login
-            },
-            {
-                path: '/itech',
-                name: 'services',
-                redirect: '/itech/home',
-                meta: {
-                    requiresAuth: true
-                },
-                component: SetUp,
-                children: [
-                    {
-                        path: '/itech/home', name: 'itech.home', component: ServiceLists
-                    },
-                ]
             }
         ]
     },
-    
+
+    {
+        path: '/itech',
+        name: 'services',
+        redirect: '/itech/home',
+        meta: {
+            requiresAuth: true
+        },
+        component: SetUp,
+        children: [
+            {
+                path: '/itech/home', name: 'itech.home', component: ServiceLists
+            },
+            {
+                path: '/itech/:service/:id', name: 'itech.service', component: ToolDashboard
+            }
+        ]
+    }
 ]
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
     routes
 })
-router.beforeEach((to,from,next)=>{
-    if(to.meta.requiresAuth && !store.state.user.token){
-        next({name: 'join'})
-    }else{
+router.beforeEach((to, from, next) => {
+    console.log(store.state.user)
+    if ((to.meta.requiresAuth || from.meta.requiresAuth) && !store.state.user.token) {
+        next({ name: 'join' })
+    } else {
         next()
     }
-    
+
 })
 export default router
