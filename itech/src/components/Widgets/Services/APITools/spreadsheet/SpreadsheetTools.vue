@@ -2,7 +2,7 @@
     <div class="flex flex-col">
         <DropMenu title="Spreadsheet" classes="bg-slate-100" :expend="true">
             <template v-slot:helper-btn>
-                <button class="px-3 py-2 text-sm rounded-lg bg-slate-200 hover:bg-slate-300" @click.stop="createSpreadsheetOption.show = true">Create</button>
+                <button class="px-3 py-2 text-sm rounded-lg bg-slate-200 hover:bg-slate-300" @click.stop="createPrep">Create</button>
             </template>
             <div class="px-2 rounded text-sm">
                 <div class="w-full my-1 px-3 py-2 flex items-center justify-between rounded-lg bg-slate-100 hover:bg-slate-200 cursor-pointer text-slate-800"
@@ -119,20 +119,28 @@ const spreadsheetInput = ref({value:'',valid: false,selectedId: null})
 const createSpreadsheetOption = ref({show:false,isEditing: false})
 const deleteAlertBox = ref({show:false})
 
+const createPrep = function(){
+    createSpreadsheetOption.value.show = true
+    spreadsheetInput.value.value = ''
+    createSpreadsheetOption.value.isEditing = false
+}
 const createNewSpreadsheet = function(){
     spreadsheetInput.value.valid = true
+    
     let payload = {
         id: props.id, payload: { name: spreadsheetInput.value.value }
     }
-    createSpreadsheetOption.value.isEditing ? payload.spreadsheetId = spreadsheetInput.value.selectedId : null;
-
+    if(createSpreadsheetOption.value.isEditing){
+        payload.spreadsheetId = spreadsheetInput.value.selectedId 
+    }
+    console.log(payload)
     store.dispatch(createSpreadsheetOption.value.isEditing ? `updateSpreadsheet` : `createSpreadsheet`,payload).then((res)=>{
         spreadsheetInput.value.valid = false
         if(res.ok){
             createSpreadsheetOption.value.show = false
             spreadsheetInput.value.value = null
         }else{
-            // if(res.code == "UNAUTHORIZED")
+            window.alert("Please authorize with your google client first!")
         }
     });
 }

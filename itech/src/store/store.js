@@ -123,7 +123,7 @@ const spreadsheetModule = {
         putSpreadsheetData: (state,data) =>{
             state.data.push(data)
         },
-        updateSpreadsheet: (state,data)=>{
+        updateSpreadsheetData: (state,data)=>{
             let index = itechObject(state.data).find(data.spreadsheetId,'refId');
             state.data[index] = data
         },
