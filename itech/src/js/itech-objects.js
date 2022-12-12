@@ -544,7 +544,6 @@ class IObject {
                     typeof object == 'object' ? Object.assign({},object) : null
     }
     find(search,key){
-        console.log(search)
         if(this.obj instanceof Array){
             if(key){
                 return this.obj.findIndex(s=> s[key] == search)

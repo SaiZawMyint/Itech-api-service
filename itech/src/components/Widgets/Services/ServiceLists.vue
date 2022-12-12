@@ -103,6 +103,7 @@ import SelectWidget from '../itech/Widgets/SelectWidget.vue';
 import itechObject from '../../../js/itech-objects'
 import { useStore } from 'vuex';
 import itech from '../../../js/itech';
+import { useRouter } from 'vue-router'
 
 const store = useStore()
 const router = useRouter()
@@ -115,7 +116,7 @@ const setUpBox = ref({
 const showCreateForm = ref(false)
 
 const projectsData = ref({
-    data: store.state.spreadsheet.data,
+    data: store.state.project.data,
     error: false,
     message: 'To add tag, you need to create outline first!'
 })
@@ -208,5 +209,4 @@ onMounted(()=>{
     })
 
 })
-import { useRouter } from 'vue-router';
 </script>

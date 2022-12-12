@@ -1,5 +1,6 @@
 import {createStore} from 'vuex'
 import axiosClient from '../axios/axios'
+import itechObject from '../js/itech-objects'
 
 const userModule = {
     state: ()=>({
@@ -21,6 +22,7 @@ const userModule = {
         storeLoginData: (state,data)=>{
             state.data = data
             state.token = data.data.accessToken
+            sessionStorage.setItem("TOKEN",data.data.accessToken)
         }
     }
 }
@@ -41,7 +43,7 @@ const servicesModule = {
         }
     }
 }
-const spreadsheetModule = {
+const projectModule = {
     state: ()=>({
         data:[]
     }),
@@ -61,7 +63,8 @@ const spreadsheetModule = {
             }).catch((err) => {
                 return { ok: false, error: err }
             })
-        }
+        },
+        
     },
     mutations: {
         storeProject: (state,data)=>{
@@ -75,6 +78,62 @@ const spreadsheetModule = {
         }
     }
 }
+
+const spreadsheetModule = {
+    state: ()=>({
+        data: []
+    }),
+    actions: {
+        async getSpreadsheets({commit}, id){
+            return axiosClient.get(`/spreadsheet/${id}/`).then(({data})=>{
+                if(data.ok) commit('storeSpreadsheetProjects',data.data)
+                return data
+            })
+        },
+        async createSpreadsheet({commit},payload){
+            return axiosClient.post(`/spreadsheet/${payload.id}/create`, payload.payload).then(({data})=>{
+                console.log(data)
+                if(data.ok) commit('putSpreadsheetData',data.data)
+                return data;
+            }).catch((err)=>{
+                console.log(err)
+                return err
+            })
+        },
+        async updateSpreadsheet({commit},payload){
+            return axiosClient.put(`/spreadsheet/${payload.id}/${payload.spreadsheetId}`, payload.payload).then(({data})=>{
+                console.log(data)
+                if(data.ok) commit('updateSpreadsheetData',data)
+                return data;
+            }).catch((err)=>{
+                console.log(err)
+                return err
+            })
+        },
+        async deleteSpreadsheet({commit},setting = {pid: 0,spreadsheetId: ''}){
+            return axiosClient.delete(`/spreadsheet/${setting.pid}/${setting.spreadsheetId}`).then(({data})=>{
+                if(data.ok) commit('removeSpreadsheet',setting.spreadsheetId);
+            })
+        }
+    },
+    mutations: {
+        storeSpreadsheetProjects: (state,data) =>{
+            state.data = data;
+        },
+        putSpreadsheetData: (state,data) =>{
+            state.data.push(data)
+        },
+        updateSpreadsheet: (state,data)=>{
+            let index = itechObject(state.data).find(data.spreadsheetId,'refId');
+            state.data[index] = data
+        },
+        removeSpreadsheet: (state,spreadsheetId)=>{
+            let index = itechObject(state.data).find(spreadsheetId,'refId');
+            state.data.splice(index,1)
+        }
+    }
+}
+
 const authModule = {
     state: ()=>({
         
@@ -107,8 +166,9 @@ const store = createStore({
     modules: {
         user: userModule,
         auth: authModule,
-        spreadsheet: spreadsheetModule,
-        services: servicesModule
+        project: projectModule,
+        services: servicesModule,
+        spreadsheet: spreadsheetModule
     }
 })
 

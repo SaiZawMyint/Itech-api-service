@@ -51,7 +51,7 @@ const router = createRouter({
 })
 router.beforeEach((to, from, next) => {
     console.log(store.state.user)
-    if ((to.meta.requiresAuth || from.meta.requiresAuth) && !store.state.user.token) {
+    if ((to.meta.requiresAuth || from.meta.requiresAuth) && !sessionStorage.getItem('TOKEN')) {
         next({ name: 'join' })
     } else {
         next()

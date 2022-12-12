@@ -6,7 +6,7 @@
                 <button @click="openAuthorize"
                     class="px-3 py-1 rounded-lg bg-slate-100 hover:bg-slate-100/50">Authorize</button>
             </div>
-            <SpreadsheetTools></SpreadsheetTools>
+            <SpreadsheetTools :id="route.params.id"></SpreadsheetTools>
         </div>
     </div>
     <Transition name="alert">
