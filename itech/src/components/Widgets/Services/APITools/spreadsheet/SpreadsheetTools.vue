@@ -11,7 +11,7 @@
                     v-for="spreadsheet in spreadsheets">
                     <div class="flex items-center">
                         <img src="@img/Google_Sheets_Logo.svg" alt="Google Spreadsheet" class="w-3">
-                        <span class="px-2">{{spreadsheet.name}}</span>
+                        <span class="px-2 truncate">{{spreadsheet.name}}</span>
                     </div>
                     <div class="flex items-center" v-if="route.params.spreadsheetId == spreadsheet.refId">
                         <button class="w-6 h-6 mx-1 flex bg-slate-200 items-center justify-center rounded-full hover:bg-blue-600/50"
@@ -42,7 +42,7 @@
                 </button>
                 <div class="p-2" v-if="spreadsheets.length == 0">
                     <p class="text-center w-full text-slate-500">You dosen't have any spreadsheet yet</p>
-                    <button class="px-3 py-2 rounded-lg bg-slate-300 text-slate-800 mx-auto block">Create Spreadsheet</button>
+                    <button class="px-3 py-2 rounded-lg bg-slate-300 text-slate-800 mx-auto block" @click="createPrep">Create Spreadsheet</button>
                 </div>
             </div>
         </DropMenu>
@@ -103,7 +103,7 @@
 </template>
 
 <script setup>
-import { onBeforeMount, ref,defineProps, computed } from 'vue';
+import { onBeforeMount, ref,defineProps, computed, toRef } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 import DropMenu from '../../../itech/UI/DropMenu.vue';
@@ -118,7 +118,7 @@ const store = useStore()
 const route = useRoute()
 const router = useRouter()
 
-const spreadsheets = ref([])
+const spreadsheets = toRef(store.state.spreadsheet,'data')
 const spreadsheetInput = ref({value:'',valid: false,selectedId: null})
 const createSpreadsheetOption = ref({show:false,isEditing: false})
 const deleteAlertBox = ref({show:false})
@@ -148,8 +148,19 @@ const createNewSpreadsheet = function(){
         if(res.ok){
             createSpreadsheetOption.value.show = false
             spreadsheetInput.value.value = null
+            store.dispatch('clearNotifications').then(()=>{
+                store.dispatch(`addNotification`,{
+                    type: "noti",
+                    message: res.message
+                })
+            })
+            
         }else{
-            window.alert("Please authorize with your google client first!")
+            console.log(res)
+            store.dispatch(`addNotification`,{
+                    type: "error",
+                    message: res.data.error.message
+                })
         }
     });
 }
@@ -167,6 +178,7 @@ const alertDelete = function(id){
 const deleteSpreadsheet = function(){
     store.dispatch(`deleteSpreadsheet`,{pid: props.id, spreadsheetId: spreadsheetInput.value.selectedId}).then((res)=>{
         deleteAlertBox.value.show = false
+        window.history.back()
     })
 }
 const createModalText = function(){
@@ -190,6 +202,3 @@ onBeforeMount(() => {
 })
 
 </script>
-<style lang="scss" scoped>
-
-</style>

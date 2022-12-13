@@ -72,14 +72,16 @@ router.beforeEach((to, from, next) => {
 async function process(to,from){
     let callData = []
     if(to.name == 'itech.service.sheets'){
-        callData.push(store.dispatch(`getSpreadsheetsData`,to.params))
+        callData.push(store.dispatch(`getSpreadsheetsData`,to.params).then((res)=>{
+            if(!res.ok){
+                store.dispatch(`addNotification`,{
+                    type: "error",
+                    message: res.error.message
+                })
+            }
+        }))
     }
     return Promise.all(callData)
-    .then((res)=>{
-        if(res instanceof Array){
-            console.log(res[0],res[0].error)
-        }
-    })
     .catch((err)=>{
         console.log(err)
     })
