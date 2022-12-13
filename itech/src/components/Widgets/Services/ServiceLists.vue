@@ -197,7 +197,7 @@ const createProject = function(){
 }
 const openAPI = function(){
     store.dispatch(`addService`,{type: setUpBox.value.title, data: spreadsheetSelectedProject.value.data})
-    router.push({name: 'itech.service',params:{service: setUpBox.value.title,id: spreadsheetSelectedProject.value.data.id}})
+    router.push({name: 'itech.service',params:{service: setUpBox.value.title,id: spreadsheetSelectedProject.value.data.id, spreadsheetId: 'dashboard'}})
 }
 onMounted(()=>{
     store.dispatch('getSpreadsheetProjects').then((res)=>{

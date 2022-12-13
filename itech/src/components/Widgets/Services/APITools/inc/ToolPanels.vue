@@ -1,5 +1,5 @@
 <template>
-    <div class="fixed top-0 left-0 w-[25%] p-2" style="top: 50px;height: calc(100% - 50px)">
+    <div class="fixed top-0 left-0 w-[25%] p-2 " style="top: 50px;height: calc(100% - 50px);z-index: 99;">
         <div class="flex flex-col rounded-lg shadow h-full">
             <div class="px-3 py-2 border-b-2 flex items-center justify-between">
                 {{props.type}}

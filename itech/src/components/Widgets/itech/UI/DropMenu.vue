@@ -16,7 +16,7 @@
             </div>
         </button>
         <div class="overflow-y-auto overflow-x-hidden rounded mt-1" :style="expend ? 'display:block':'display:none'"
-        :class="max.width,max.height ">
+        :class="[max.width,max.height]">
             <slot></slot>
         </div>
     </div>

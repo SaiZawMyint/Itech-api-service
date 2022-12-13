@@ -3,6 +3,7 @@
         <div class="w-full sticky top-[50px] px-3 py-2 bg-gray-200/40 backdrop-blur-sm rounded-lg">
             Spreadsheet
         </div>
+        <router-view></router-view>
     </div>
 </template>
 

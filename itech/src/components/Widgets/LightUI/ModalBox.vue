@@ -1,7 +1,8 @@
 <template>
-    <div class="fixed w-full h-full bg-slate-500/50 backdrop-blur-sm modal flex items-center justify-center" v-if="show" @click="hadlerClose">
+    <div style="z-index: 100" class="fixed w-full h-full bg-slate-500/50 backdrop-blur-sm modal flex items-center justify-center" v-if="show" @click="hadlerClose">
         <Transition name="alert">
-        <div @click.stop="" :class="[`width: ${width ? width:'w-[300px]'}`,`height: ${height ? height:'h-[fit-content]'}`]" class="relative border-gray-300 border-2 rounded-lg bg-gray-200 modal-box overflow-hidden flex flex-col justify-between" v-if="show">
+        <div @click.stop="" :class="[`width: ${width ? width:'w-[300px]'}`,`height: ${height ? height:'h-[fit-content]'}`]" class="relative border-gray-300 border-2 rounded-lg bg-gray-200 modal-box overflow-hidden flex flex-col justify-between" v-if="show"
+        >
             <div>
                 <h2 class="text-center border-gray-100 border-b-2 py-2">{{title}}</h2>
                 <div class="flex items-center justify-center">

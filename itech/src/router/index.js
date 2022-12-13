@@ -7,6 +7,8 @@ import Login from '../components/Widgets/GustFieldWidgets/Login.vue'
 
 import ServiceLists from '../components/Widgets/Services/ServiceLists.vue'
 import ToolDashboard from '../components/Widgets/Services/APITools/ToolDashboard.vue'
+
+import SheetLists from '../components/Widgets/Services/APITools/spreadsheet/sheet/SheetLists.vue'
 import store from '../store/store'
 
 
@@ -39,7 +41,15 @@ const routes = [
                 path: '/itech/home', name: 'itech.home', component: ServiceLists
             },
             {
-                path: '/itech/:service/:id', name: 'itech.service', component: ToolDashboard
+                path: '/itech/:service/:id', 
+                name: 'itech.service', 
+                redirect: {
+                    name: 'itech.service.sheets'
+                },
+                component: ToolDashboard,
+                children: [
+                    {path: ':spreadsheetId?', 'name': 'itech.service.sheets',component: SheetLists }
+                ]
             }
         ]
     }
@@ -50,12 +60,28 @@ const router = createRouter({
     routes
 })
 router.beforeEach((to, from, next) => {
-    console.log(store.state.user)
-    if ((to.meta.requiresAuth || from.meta.requiresAuth) && !sessionStorage.getItem('TOKEN')) {
-        next({ name: 'join' })
-    } else {
-        next()
-    }
-
+    process(to,from).then(()=>{
+        if ((to.meta.requiresAuth || from.meta.requiresAuth) && !sessionStorage.getItem('TOKEN')) {
+            next({ name: 'join' })
+        } else {
+            next()
+        }
+    })
 })
+
+async function process(to,from){
+    let callData = []
+    if(to.name == 'itech.service.sheets'){
+        callData.push(store.dispatch(`getSpreadsheetsData`,to.params))
+    }
+    return Promise.all(callData)
+    .then((res)=>{
+        if(res instanceof Array){
+            console.log(res[0],res[0].error)
+        }
+    })
+    .catch((err)=>{
+        console.log(err)
+    })
+}
 export default router

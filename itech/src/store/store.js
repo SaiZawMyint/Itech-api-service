@@ -1,7 +1,6 @@
 import {createStore} from 'vuex'
 import axiosClient from '../axios/axios'
 import itechObject from '../js/itech-objects'
-
 const userModule = {
     state: ()=>({
         data:{},
@@ -81,13 +80,29 @@ const projectModule = {
 
 const spreadsheetModule = {
     state: ()=>({
-        data: []
+        data: [],
+        sheets: {
+            id: '',
+            data: []
+        }
     }),
     actions: {
         async getSpreadsheets({commit}, id){
             return axiosClient.get(`/spreadsheet/${id}/`).then(({data})=>{
                 if(data.ok) commit('storeSpreadsheetProjects',data.data)
                 return data
+            })
+        },
+        async getSpreadsheetsData({commit},payload = {id: 0,service: '',spreadsheetId:""}){
+            if(!payload.spreadsheetId){
+                commit('clearSheetData');
+                return false;
+            }
+            return axiosClient.get(`/${payload.service}/${payload.id}/${payload.spreadsheetId}/sheets`).then(({data})=>{
+                if(data.ok) commit('storeSheets',{spreadsheetId: payload.spreadsheetId,data: data.data});
+                return res;
+            }).catch((err)=>{
+                return err
             })
         },
         async createSpreadsheet({commit},payload){
@@ -102,8 +117,7 @@ const spreadsheetModule = {
         },
         async updateSpreadsheet({commit},payload){
             return axiosClient.put(`/spreadsheet/${payload.id}/${payload.spreadsheetId}`, payload.payload).then(({data})=>{
-                console.log(data)
-                if(data.ok) commit('updateSpreadsheetData',data)
+                if(data.ok) commit('updateSpreadsheetData',data.data)
                 return data;
             }).catch((err)=>{
                 console.log(err)
@@ -120,11 +134,19 @@ const spreadsheetModule = {
         storeSpreadsheetProjects: (state,data) =>{
             state.data = data;
         },
+        storeSheets: (state,data)=>{
+            console.log(data)
+            state.sheets = data
+        },
+        clearSheetData: (state)=>{
+            state.sheets = {}
+        },
         putSpreadsheetData: (state,data) =>{
             state.data.push(data)
         },
         updateSpreadsheetData: (state,data)=>{
-            let index = itechObject(state.data).find(data.spreadsheetId,'refId');
+            let index = itechObject(state.data).find(data.refId,'refId');
+            console.log(index,data,state.data)
             state.data[index] = data
         },
         removeSpreadsheet: (state,spreadsheetId)=>{
@@ -162,13 +184,37 @@ const authModule = {
 
     }
 }
+const notificationModule = {
+    state: ()=>({
+        data: []
+    }),
+    actions: {
+        putNotification({commit},data){
+            commit('putNoti',data)
+        },
+        addNotification({commit},data){
+            console.log(data)
+            commit('addNoti',data)
+        }
+    },
+    mutations: {
+        putNoti:(state,data)=>{
+            state.data = data
+        },
+        addNoti:(state,data)=>{
+            console.log(data)
+            state.data.push(data)
+        },
+    }
+}
 const store = createStore({
     modules: {
         user: userModule,
         auth: authModule,
         project: projectModule,
         services: servicesModule,
-        spreadsheet: spreadsheetModule
+        spreadsheet: spreadsheetModule,
+        notification: notificationModule
     }
 })
 
