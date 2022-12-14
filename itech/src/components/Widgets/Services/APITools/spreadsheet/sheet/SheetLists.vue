@@ -1,10 +1,13 @@
 <template>
     <div class="w-full grid grid-cols-6 gap-2" v-if="'spreadsheetId' in route.params && getSheetData">
-        <button class="relative service-block m-2 rounded-lg overflow-hidden shadow text-center ring-slate hover:ring-2 focus:ring-2 hover:shadow-md" v-for="sheet in getSheetData.data">
-            <div class="w-full flex items-center justify-center p-2">
+        <button 
+        @dblclick="openSheet(sheet)"
+        class="relative flex flex-col text-sm service-block m-2 rounded-lg overflow-hidden shadow text-center ring-slate hover:ring-2 focus:ring-2 hover:shadow-md" 
+        v-for="sheet in getSheetData.data">
+            <div class="w-full h-full flex items-center justify-center p-2">
                 <img src="@img/Google_Sheets_Logo.svg" alt="">
             </div>
-            <div class="w-full bg-gray-100 px-3 py-2">
+            <div class="w-full bg-gray-100 px-3 py-2 truncate">
                 {{sheet.name}}
             </div>
             <button 
@@ -19,7 +22,7 @@
         </button>
         <button 
         @click="showBox"
-        class="m-2 rounded-lg overflow-hidden border-dashed border-2 border-slate-300 text-slate-300 focus:border-sky-500 focus:text-sky-500 hover:border-sky-500 hover:text-sky-500 flex items-center justify-center">
+        class="m-2 min-h-[150px] rounded-lg overflow-hidden border-dashed border-2 border-slate-300 text-slate-300 focus:border-sky-500 focus:text-sky-500 hover:border-sky-500 hover:text-sky-500 flex items-center justify-center">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
                 class="w-6 h-6">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
@@ -58,13 +61,14 @@
 </template>
 <script setup>
 import { computed } from '@vue/reactivity';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 import { ref } from 'vue';
 import ModalBox from '../../../../LightUI/ModalBox.vue';
 
 const store = useStore()
 const route = useRoute()
+const router = useRouter()
 const getSheetData = computed(()=>{
     return store.state.spreadsheet.sheets.data
 })
@@ -78,7 +82,8 @@ const showBox = function(){
 const edit = function(sheet){
     createSheetOption.value.show = true
     sheetInput.value.value = sheet.name
-    sheetInput.value.selectedId = sheet.id
+    sheetInput.value.selectedId = sheet.sheetId
+    console.log(sheet)
     createSheetOption.value.isEditing = true
 }
 const createNewSheet = function(){
@@ -112,6 +117,9 @@ const createNewSheet = function(){
 }
 const createModalText = function(){
     return createSheetOption.value.isEditing ? "Update" : "Create"
+}
+const openSheet = function(sheet){
+    router.push({name: 'itech.service.sheets.details',params:{spreadsheetId: route.params.spreadsheetId,sheetId: sheet.sheetId}})
 }
 </script>
 

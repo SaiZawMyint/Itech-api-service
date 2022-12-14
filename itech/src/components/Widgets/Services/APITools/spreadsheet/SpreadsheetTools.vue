@@ -2,20 +2,21 @@
     <div class="flex flex-col">
         <DropMenu title="Spreadsheet" classes="bg-slate-100" :expend="true">
             <template v-slot:helper-btn>
-                <button class="px-3 py-2 text-sm rounded-lg bg-slate-200 hover:bg-slate-300" @click.stop="createPrep">Create</button>
+                <button class="px-3 py-2 mx-1 text-sm rounded-lg bg-slate-200 hover:bg-slate-300" @click.stop="importAlertBox.show=true">Import</button>
+                <button class="px-3 py-2 mx-1 text-sm rounded-lg bg-slate-200 hover:bg-slate-300" @click.stop="createPrep">Create</button>
             </template>
             <div class="px-2 rounded text-sm">
-                <button @click="chooseProjectService(spreadsheet.refId)"
+                <button @click.stop="chooseProjectService(spreadsheet.refId)"
                 class="w-full my-1 px-3 py-2 flex items-center justify-between rounded-lg bg-slate-100 cursor-pointer text-slate-800"
                 :class="spreadsheetActiveClass(spreadsheet.refId)"
                     v-for="spreadsheet in spreadsheets">
-                    <div class="flex items-center">
+                    <div class="flex items-center max-w-[50%]">
                         <img src="@img/Google_Sheets_Logo.svg" alt="Google Spreadsheet" class="w-3">
                         <span class="px-2 truncate">{{spreadsheet.name}}</span>
                     </div>
                     <div class="flex items-center" v-if="route.params.spreadsheetId == spreadsheet.refId">
                         <button class="w-6 h-6 mx-1 flex bg-slate-200 items-center justify-center rounded-full hover:bg-blue-600/50"
-                            @click.prevent="edit(spreadsheet)">
+                            @click.stop="edit(spreadsheet)">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                                 stroke="currentColor" class="w-4 h-4">
                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -23,7 +24,7 @@
                             </svg>
                         </button>
                         <button class="w-6 h-6 flex bg-slate-200 items-center justify-center rounded-full hover:bg-red-600/50"
-                            @click.prevent="alertDelete(spreadsheet.refId)">
+                            @click.stop="alertDelete(spreadsheet.refId)">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                                 stroke="currentColor" class="w-4 h-4">
                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -100,6 +101,29 @@
             </template>
         </ModalBox>
     </Transition>
+    <Transition name="alert">
+        <ModalBox title="Import Spreadsheet" v-if="importAlertBox.show" :show="importAlertBox.show"
+            @on-close="importAlertBox.show = false" width="w-[400px]">
+            <template v-slot:icon>
+                <div class="w-10 h-10 mt-7 flex items-center bg-green-600/80 text-gray-100 justify-center rounded-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                        class="w-6 h-6">
+                        <path stroke-linecap="round"
+                            d="M16.5 12a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zm0 0c0 1.657 1.007 3 2.25 3S21 13.657 21 12a9 9 0 10-2.636 6.364M16.5 12V8.25" />
+                    </svg>
+                </div>
+            </template>
+            <template v-slot:content>
+                <p class="p-2 text-center text-slate-400 text-sm">Please import your Spreadsheet</p>
+                <div class="p-2 w-[70%] mx-auto mb-4">
+                    <div class="flex  rounded-lg overflow-hidden ring-1 ring-slate-400 text-sm">
+                        <input v-model="importId" type="text" class="appereance-none px-3 py-2 w-full" placeholder="Spreadsheet Id">
+                        <button class="px-3 hover:font-bold" @click="importSheet">Import</button>
+                    </div>
+                </div>
+            </template>
+        </ModalBox>
+    </Transition>
 </template>
 
 <script setup>
@@ -117,7 +141,10 @@ const props = defineProps({
 const store = useStore()
 const route = useRoute()
 const router = useRouter()
-
+const importAlertBox=ref({
+    show: false
+})
+const importId = ref('')
 const spreadsheets = toRef(store.state.spreadsheet,'data')
 const spreadsheetInput = ref({value:'',valid: false,selectedId: null})
 const createSpreadsheetOption = ref({show:false,isEditing: false})
@@ -177,8 +204,17 @@ const alertDelete = function(id){
 }
 const deleteSpreadsheet = function(){
     store.dispatch(`deleteSpreadsheet`,{pid: props.id, spreadsheetId: spreadsheetInput.value.selectedId}).then((res)=>{
-        deleteAlertBox.value.show = false
-        window.history.back()
+        if(res.ok){
+            deleteAlertBox.value.show = false
+            router.back()
+            store.dispatch('clearNotifications').then(()=>{
+                store.dispatch(`addNotification`,{
+                    type: "noti",
+                    message: res.message
+                })
+            })
+        }
+        
     })
 }
 const createModalText = function(){
@@ -192,6 +228,14 @@ const spreadsheetActiveClass = function(id){
         return 'bg-slate-400 hover:bg-slate-400/80';
     }
     return 'hover:bg-slate-200';
+}
+const importSheet = function(){
+    let payload = {
+        id: props.id, payload: { spreadsheetId: importId.value }
+    }
+    store.dispatch(`importSpreadsheet`,payload).then((res)=>{
+        console.log(res)
+    })
 }
 onBeforeMount(() => {
     store.dispatch(`getSpreadsheets`,props.id).then((res)=>{

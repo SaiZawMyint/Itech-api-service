@@ -115,6 +115,14 @@ const spreadsheetModule = {
                 return err
             })
         },
+        async importSpreadsheet({commit},payload){
+            return axiosClient.post(`/spreadsheet/${payload.id}/import`, payload.payload).then(({data})=>{
+                if(data.ok) commit('putSpreadsheetData',data.data)
+                return data;
+            }).catch((err)=>{
+                return err
+            })
+        },
         async updateSpreadsheet({commit},payload){
             return axiosClient.put(`/spreadsheet/${payload.id}/${payload.spreadsheetId}`, payload.payload).then(({data})=>{
                 if(data.ok) commit('updateSpreadsheetData',data.data)
@@ -126,13 +134,22 @@ const spreadsheetModule = {
         async deleteSpreadsheet({commit},setting = {pid: 0,spreadsheetId: ''}){
             return axiosClient.delete(`/spreadsheet/${setting.pid}/${setting.spreadsheetId}`).then(({data})=>{
                 if(data.ok) commit('removeSpreadsheet',setting.spreadsheetId);
-                return setting
+                return data
             })
         },
         async createSheet({commit},payload){
             return axiosClient.post(`/spreadsheet/${payload.id}/${payload.spreadsheetId}/sheets`, payload.payload).then(({data})=>{
                 console.log(data)
                 if(data.ok) commit('putSheetData',{id: payload.spreadsheetId,data:data.data.sheet})
+                return data;
+            }).catch((err)=>{
+                if(err.response && err.response.data) return err.response.data
+                return err
+            })
+        },
+        async updateSheet({commit},payload){
+            return axiosClient.put(`/spreadsheet/${payload.id}/${payload.spreadsheetId}/${payload.sheetId}`, payload.payload).then(({data})=>{
+                if(data.ok) commit('updateSheetData',{id: payload.spreadsheetId,data:data.data})
                 return data;
             }).catch((err)=>{
                 if(err.response && err.response.data) return err.response.data
@@ -165,6 +182,34 @@ const spreadsheetModule = {
         },
         putSheetData: (state,data)=>{
             state.sheets.data.data.push(data.data)
+        },
+        updateSheetData: (state,data) =>{
+            let index = itechObject(state.sheets.data.data).find(data.data.sheetId,"sheetId")
+            state.sheets.data.data[index] = {
+                "name": data.data.name,
+                "sheetId": data.data.sheetId
+            }
+        }
+    }
+}
+
+const sheetData = {
+    state: ()=>({
+        data: {}
+    }),
+    actions: {
+        async getSheetDetailData({commit},payload){
+            return axiosClient.get(
+                `/spreadsheet/${payload.id}/${payload.spreadsheetId}/${payload.sheetId}?range=${payload.range}`)
+                .then(({data}) => {
+                    if(data.ok) commit('putSheetDetailData',data.data)
+                    return data
+                })
+        }
+    },
+    mutations: {
+        putSheetDetailData: (state,data)=>{
+            state.data = data
         }
     }
 }
@@ -238,7 +283,8 @@ const store = createStore({
         project: projectModule,
         services: servicesModule,
         spreadsheet: spreadsheetModule,
-        notification: notificationModule
+        notification: notificationModule,
+        sheet: sheetData
     }
 })
 

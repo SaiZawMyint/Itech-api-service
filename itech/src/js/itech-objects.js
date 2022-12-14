@@ -34,6 +34,13 @@
             return iObj.find(search,key)
         },
         /**
+         * Find max value of array
+         * @returns index of Array
+         */
+        max: ()=>{
+            return iObj.max()
+        },
+        /**
          * Add value to object.
          * @param  {any} value 
          */
@@ -567,6 +574,14 @@ class IObject {
                 return found
             }
         }
+    }
+    max(){
+        if(this.obj instanceof Array){
+            return this.obj
+                .map(a => a.length)
+                .indexOf(Math.max(...this.obj.map(a => a.length)));
+        }
+        return null;
     }
     add(value,index) {
         if (this.obj instanceof Array) { 

@@ -35,6 +35,11 @@ input:focus{
 ::-webkit-scrollbar-thumb{
     background-color: #0f7b8f5f;
 }
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
 .header{
     z-index: 99;
 }
