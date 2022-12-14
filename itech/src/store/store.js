@@ -117,6 +117,7 @@ const spreadsheetModule = {
         },
         async importSpreadsheet({commit},payload){
             return axiosClient.post(`/spreadsheet/${payload.id}/import`, payload.payload).then(({data})=>{
+                console.log(data)
                 if(data.ok) commit('putSpreadsheetData',data.data)
                 return data;
             }).catch((err)=>{

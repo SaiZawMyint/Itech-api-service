@@ -1,7 +1,7 @@
 <template>
-    <div class="overflow-x-auto relative shadow-md sm:rounded-lg ring-2">
-        <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400 border-collapse border ">
-            <thead class="text-xs text-gray-700 uppercase bg-gray-300 dark:bg-gray-700 dark:text-gray-400">
+    <div class="overflow-auto relative shadow-md sm:rounded-lg dark:bg-gray-700 ring-2 max-h-[500px]">
+        <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400 border-collapse border">
+            <thead class="sticky top-0 text-xs text-gray-700 uppercase bg-gray-300 dark:bg-gray-700 dark:text-slate-400">
                 <tr>
                     <th class="text-center py-3 px-3 border border-slate-200">No.</th>
                     <th scope="col" class="py-3 px-6 border border-slate-200 max-w-[300px]" v-for="(t,index) in getTitle">
@@ -13,7 +13,7 @@
                 <tr v-for="(d,index) in data" v-if="data.length > 0"
                     class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
                     <th class="text-center border border-slate-200">{{index + 1}}</th>
-                    <th :title="x" scope="row" class="py-3 overflow-hidden truncate max-w-[300px] px-4 font-medium border border-slate-200 text-gray-900 whitespace-nowrap dark:text-white"
+                    <th :title="x" scope="row" class="py-3 overflow-hidden truncate max-w-[300px] px-4 font-medium border border-slate-200 text-gray-900 whitespace-nowrap dark:text-slate-200"
                      v-for="x in d" @click="click">
                         {{x}}
                     </th>
@@ -53,10 +53,16 @@ const getTitle = computed(()=>{
     return t
 })
 const click = function(e){
+    const element = e.target;
+    if(document.querySelector(".tab-selected"))
+        document.querySelector(".tab-selected").classList.remove("tab-selected");
+    element.classList.add("tab-selected")
     emits('tableClick',e.target)
 }
 </script>
 
-<style lang="scss" scoped>
-
+<style>
+.tab-selected{
+    box-shadow: inset 0px 0px 0px 2px #04bfc2;
+}
 </style>
