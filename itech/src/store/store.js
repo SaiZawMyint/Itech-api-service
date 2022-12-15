@@ -121,6 +121,7 @@ const spreadsheetModule = {
                 if(data.ok) commit('putSpreadsheetData',data.data)
                 return data;
             }).catch((err)=>{
+                if(err.response && err.response.data) return err.response.data
                 return err
             })
         },
@@ -277,6 +278,11 @@ const notificationModule = {
         }
     }
 }
+const setting = {
+    state: ()=>({
+        progress: false
+    })
+}
 const store = createStore({
     modules: {
         user: userModule,
@@ -285,7 +291,8 @@ const store = createStore({
         services: servicesModule,
         spreadsheet: spreadsheetModule,
         notification: notificationModule,
-        sheet: sheetData
+        sheet: sheetData,
+        setting: setting
     }
 })
 

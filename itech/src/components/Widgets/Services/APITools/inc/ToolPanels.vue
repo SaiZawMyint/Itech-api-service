@@ -40,7 +40,7 @@
 </template>
 
 <script setup>
-import { defineProps, onMounted, ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { useStore } from 'vuex';
 import SpreadsheetTools from '../spreadsheet/SpreadsheetTools.vue';

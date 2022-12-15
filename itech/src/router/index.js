@@ -65,12 +65,15 @@ const router = createRouter({
     routes
 })
 router.beforeEach((to, from, next) => {
+    store.state.setting.progress = true
     process(to,from).then(()=>{
+        store.state.setting.progress = false
         if ((to.meta.requiresAuth || from.meta.requiresAuth) && !sessionStorage.getItem('TOKEN')) {
             next({ name: 'join' })
         } else {
             next()
         }
+
     })
 })
 
@@ -78,17 +81,17 @@ async function process(to,from){
     let callData = []
     if(to.name == 'itech.service.sheets'){
         callData.push(store.dispatch(`getSpreadsheetsData`,to.params).then((res)=>{
-            console.log(res)
+            if(!res) return null
             if(!res.ok){
                 store.dispatch(`addNotification`,{
                     type: "error",
-                    message: res.error.message ? res.error.message : res.message
+                    message: res.error && res.error.message ? res.error.message : res.message
                 })
             }
         }))
     }
     if(to.name == 'itech.service.sheets.details'){
-        let payload = Object.assign(to.params, {range: "A1:J10"})
+        let payload = Object.assign(to.params, {range: "A1:J30"})
         callData.push(store.dispatch(`getSheetDetailData`,payload).then((res)=>{
             console.log(res)
             if(!res.ok){

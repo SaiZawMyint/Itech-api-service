@@ -23,7 +23,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref,defineProps } from 'vue';
+import { onMounted, ref } from 'vue';
 
 const props = defineProps({
     title: {

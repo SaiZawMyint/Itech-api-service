@@ -1,6 +1,7 @@
 <template>
     <div class="flex flex-col">
-        <DropMenu title="Spreadsheet" classes="bg-slate-100" :expend="true">
+        <DropMenu title="Spreadsheet" classes="bg-slate-100" :expend="true"
+        :max="{height:'max-h-[400px]'}">
             <template v-slot:helper-btn>
                 <button class="px-3 py-2 mx-1 text-sm rounded-lg bg-slate-200 hover:bg-slate-300" @click.stop="importAlertBox.show=true">Import</button>
                 <button class="px-3 py-2 mx-1 text-sm rounded-lg bg-slate-200 hover:bg-slate-300" @click.stop="createPrep">Create</button>
@@ -127,7 +128,7 @@
 </template>
 
 <script setup>
-import { onBeforeMount, ref,defineProps, computed, toRef } from 'vue';
+import { onBeforeMount, ref, toRef } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 import DropMenu from '../../../itech/UI/DropMenu.vue';
@@ -235,6 +236,14 @@ const importSheet = function(){
     }
     store.dispatch(`importSpreadsheet`,payload).then((res)=>{
         console.log(res)
+        if(!res.ok){
+            store.dispatch('clearNotifications').then(()=>{
+                store.dispatch(`addNotification`,{
+                    type: "error",
+                    message:  res.error && res.error.message ? res.error.message : res.message
+                })
+            })
+        }
     })
 }
 onBeforeMount(() => {

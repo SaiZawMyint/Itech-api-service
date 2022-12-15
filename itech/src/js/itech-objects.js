@@ -14,7 +14,7 @@
  * @author SaiZawMyint
  * @returns relational functions
  */
- const itechObject = function (selector) {
+ const itechObject = function(selector) {
     let selected = selector == undefined ? Object: selector
     var iObj = new IObject(selected)
 
@@ -153,7 +153,32 @@
                 }
                 reader.readAsText(blob);
             }
-            
+        },
+        search2DArray: (array = [[]])=>{
+
+            return {
+                validate: function(){
+                    return (array instanceof Array)
+                },
+                search: function(search,sensitive = true){
+                    if(!this.validate()) return false
+                    let data = []
+                    for(let a = 0 ; a < array.length; a++){
+                        let x = array[a]
+                       for(let b = 0; b < x.length; b++){
+                            let s = sensitive ? x[b] : x[b].toLowerCase()
+                            let q = sensitive ? search : search.toLowerCase()
+                            if(s.indexOf(q) > -1 ){
+                                data.push({
+                                    row: a,
+                                    col: b
+                                })
+                            }
+                        }
+                    }
+                   return data
+                }
+            }
         }
     }
 }

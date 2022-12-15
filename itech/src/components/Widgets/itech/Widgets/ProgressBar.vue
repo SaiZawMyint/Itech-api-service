@@ -1,13 +1,4 @@
 <template>
-    <div class="progress-bar">
-
-    </div>
+    <div class="loading-bar"></div>
 </template>
-
-<script setup>
-
-</script>
-
-<style lang="scss" scoped>
-
-</style>
+<script setup></script>
