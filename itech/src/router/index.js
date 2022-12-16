@@ -9,6 +9,7 @@ import ServiceLists from '../components/Widgets/Services/ServiceLists.vue'
 import ToolDashboard from '../components/Widgets/Services/APITools/ToolDashboard.vue'
 
 import SheetLists from '../components/Widgets/Services/APITools/spreadsheet/sheet/SheetLists.vue'
+import SheetHome from '../components/Widgets/Services/APITools/spreadsheet/sheet/SheetHome.vue'
 import Detials from '../components/Widgets/Services/APITools/spreadsheet/sheet/Detials.vue'
 import store from '../store/store'
 
@@ -45,14 +46,17 @@ const routes = [
                 path: '/itech/:service/:id', 
                 name: 'itech.service', 
                 redirect: {
-                    name: 'itech.service.sheets'
+                    name: 'itech.service.shome'
                 },
                 component: ToolDashboard,
                 children: [
                     {
-                        path: ':spreadsheetId?', 'name': 'itech.service.sheets',component: SheetLists,
+                        path: 'service', 'name': 'itech.service.shome',component: SheetHome,
                     },
-                    {path: ':spreadsheetId/:sheetId',name: 'itech.service.sheets.details', component:Detials}
+                    {
+                        path: 'service/:spreadsheetId?', 'name': 'itech.service.sheets',component: SheetLists,
+                    },
+                    {path: 'service/:spreadsheetId/:sheetId',name: 'itech.service.sheets.details', component:Detials}
                 ]
             },
             
@@ -93,7 +97,6 @@ async function process(to,from){
     if(to.name == 'itech.service.sheets.details'){
         let payload = Object.assign(to.params, {range: "A1:J30"})
         callData.push(store.dispatch(`getSheetDetailData`,payload).then((res)=>{
-            console.log(res)
             if(!res.ok){
                 store.dispatch(`addNotification`,{
                     type: "error",

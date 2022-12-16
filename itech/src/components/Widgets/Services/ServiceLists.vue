@@ -179,7 +179,6 @@ const createProject = function(){
             createWatcher.value.show = true
             createWatcher.value.error = false
             showCreateForm.value = false
-            console.log(res)
             changesHandler(res.data)
         }else{
             createWatcher.value.show = true
@@ -197,7 +196,7 @@ const createProject = function(){
 }
 const openAPI = function(){
     store.dispatch(`addService`,{type: setUpBox.value.title, data: spreadsheetSelectedProject.value.data})
-    router.push({name: 'itech.service',params:{service: setUpBox.value.title,id: spreadsheetSelectedProject.value.data.id, spreadsheetId: 'dashboard'}})
+    router.push({name: 'itech.service.shome',params:{service: setUpBox.value.title,id: spreadsheetSelectedProject.value.data.id}})
 }
 onMounted(()=>{
     store.dispatch('getSpreadsheetProjects').then((res)=>{

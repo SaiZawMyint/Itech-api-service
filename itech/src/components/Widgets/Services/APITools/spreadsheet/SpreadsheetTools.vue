@@ -187,7 +187,7 @@ const createNewSpreadsheet = function(){
             console.log(res)
             store.dispatch(`addNotification`,{
                     type: "error",
-                    message: res.data.error.message
+                    message: res.error.message
                 })
         }
     });

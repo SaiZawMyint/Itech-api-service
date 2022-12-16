@@ -112,6 +112,7 @@ const spreadsheetModule = {
                 if(data.ok) commit('putSpreadsheetData',data.data)
                 return data;
             }).catch((err)=>{
+                if(err.response && err.response.data) return err.response.data
                 return err
             })
         },
