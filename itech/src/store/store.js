@@ -91,6 +91,9 @@ const spreadsheetModule = {
             return axiosClient.get(`/spreadsheet/${id}/`).then(({data})=>{
                 if(data.ok) commit('storeSpreadsheetProjects',data.data)
                 return data
+            }).catch((err)=>{
+                console.log(err)
+                return err.response.data
             })
         },
         async getSpreadsheetsData({commit},payload = {id: 0,service: '',spreadsheetId:""}){
@@ -112,6 +115,7 @@ const spreadsheetModule = {
                 if(data.ok) commit('putSpreadsheetData',data.data)
                 return data;
             }).catch((err)=>{
+                console.log(err)
                 if(err.response && err.response.data) return err.response.data
                 return err
             })
@@ -219,7 +223,11 @@ const sheetData = {
 
 const authModule = {
     state: ()=>({
-        
+        status: true,
+        tokenAlertBox: {
+            show: false,
+            closeable: true
+        }
     }),
     actions: {
         async requestAuth({commit},id){
@@ -239,10 +247,23 @@ const authModule = {
             }).catch((err)=>{
                 return err
             })
+        },
+        async checkStatus({commit},id){
+            return axiosClient.get(`/auth/${id}/status`).then(({data})=>{
+                console.log(data)
+                commit('status',data)
+                return data
+            }).catch((err)=>{
+                commit('status',err.response.data)
+                return err.response.data
+            })
         }
     },
     mutations: {
-
+        status: (state,data)=>{
+            console.log(data)
+            state.status = data.ok
+        }
     }
 }
 const notificationModule = {

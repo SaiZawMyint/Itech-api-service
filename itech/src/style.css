@@ -261,3 +261,36 @@ input::-webkit-inner-spin-button {
         width: 0%;
     }
 }
+.float-noti{
+    position: absolute;
+    top: 3px;
+    right: 3px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+.float-noti.alert{
+    background-color: var(--unseen-noti-color);
+}
+#tool-panel-hider{
+    transition: all .4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+#tool-panel-hider svg{
+    pointer-events: none;
+}
+#tool-panel-hider.active{
+    transform: rotate(180deg);
+}
+#tool-panel{
+    transition: all .4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+#tool-panel.hide{
+    width: 0 !important;
+}
+#tool-dashboard{
+    transition: all .4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+#tool-dashboard.wide{
+    width: 100% !important;
+    margin-left: 0 !important;
+}

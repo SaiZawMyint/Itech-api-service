@@ -48,6 +48,7 @@ const routes = [
                 redirect: {
                     name: 'itech.service.shome'
                 },
+                meta:{service: 'SPREADSHEET'},
                 component: ToolDashboard,
                 children: [
                     {
@@ -104,6 +105,23 @@ async function process(to,from){
                 })
             }
         }))
+    }
+    if(to.meta && 'service' in to.meta){
+        console.log(to.params)
+        switch(to.meta.service){
+            case "SPREADSHEET":{
+                callData.push(store.dispatch(`checkStatus`,to.params.id).then((res)=>{
+                    if(!res.ok){
+                        store.dispatch('clearNotifications').then(()=>{
+                            store.dispatch(`addNotification`,{
+                                type: "warning",
+                                message: res.message
+                            })
+                        })
+                    }
+                }))
+            }break
+        }
     }
     return Promise.all(callData)
     .catch((err)=>{

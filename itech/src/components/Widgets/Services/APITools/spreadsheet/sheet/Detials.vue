@@ -23,7 +23,7 @@
             </div>
             <div class="flex items-center">
                 <form @submit.prevent="searchCell" class="flex rounded-lg overflow-hidden ring-1 ring-slate-400 text-sm">
-                    <input @change="searchChanges" v-model="searchOption.input" type="text" class="appereance-none px-3 py-2 w-full" placeholder="Search">
+                    <input @input="searchChanges" v-model="searchOption.input" type="search" class="appereance-none px-3 py-2 w-full" placeholder="Search">
                     <div class="flex items-center bg-slate-100 p-1 rounded" v-if="searchOption.match">
                         <button type="button"
                         @click.stop="flowSearch('up')" class=" w-5 h-5 flex items-center justify-center">
@@ -56,10 +56,10 @@
                 <span class="px-3 py-2 bg-gray-200 min-w-[fit-content] max-w-[20%]">
                     Selected Cell
                 </span>
-                <input type="text" id="references" class="appereance-none w-full px-3 py-2" name="">
+                <input type="text" id="references" autocomplete="off" class="appereance-none w-full px-3 py-2" name="">
             </div>
         </div>
-        <div class="w-full rounded-lg shadow overflow-hidden">
+        <div class="w-full rounded-lg shadow overflow-hidden mb-4">
             <Table v-bind:data="sheetProps.values" :selected="selectedProps" @table-click="tableClick" 
             id="record-table"
             />
@@ -78,7 +78,6 @@
                 </div>
             </template>
             <template v-slot:content>
-                <!-- <div class="text-center text-slate-400 px-4 text-sm">The filter options equivalent to Google Spreadsheet ranges</div> -->
                 <div class="flex flex-col p-1 rounded mx-auto mt-2">
                     <div class="w-full my-1 flex items-center justify-center">
                         <label class="w-[30%]">Row</label>
@@ -92,7 +91,7 @@
                             </button>
                             <div
                                 class="flex mx-1 items-center max-w-[100px] rounded ring-2 ring-slate-300 overflow-hidden">
-                                <input v-model="operations.start.range" type="text" class="w-[40%] uppercase px-2 py-1 bg-slate-200">
+                                <input v-model="operations.start.range" type="text" class="w-[40%] text-center uppercase px-2 py-1 bg-slate-200">
                                 <input v-model="operations.start.index" type="number" name=""
                                     class="w-[60%] text-right px-2 py-1" id="" placeholder="Row">
                             </div>
@@ -117,7 +116,7 @@
                             </button>
                             <div
                                 class="flex mx-1 items-center max-w-[100px] rounded ring-2 ring-slate-300 overflow-hidden">
-                                <input v-model="operations.end.range" type="text" class="w-[40%] uppercase px-2 py-1 bg-slate-200">
+                                <input v-model="operations.end.range" type="text" class="w-[40%] text-center uppercase px-2 py-1 bg-slate-200">
                                 <input v-model="operations.end.index" type="number" name=""
                                     class="w-[60%] text-right px-2 py-1" id="" placeholder="Column">
                             </div>
@@ -206,7 +205,11 @@ const remove = function(direction){
     }
 }
 const rangeToString = computed(()=>{
-    return `${operations.value.start.range}${operations.value.start.index}:${operations.value.end.range}${operations.value.end.index}`
+    let startRange = operations.value.start.range == null ? "A":operations.value.start.range
+    let startIndex = operations.value.start.index == null ? "A":operations.value.start.index
+    let endRange = operations.value.end.range == null ? "A":operations.value.end.range
+    let endIndex = operations.value.end.index == null ? "A":operations.value.end.index
+    return `${startRange}${startIndex}:${endRange}${endIndex}`
 })
 const applyFilter = function(){
     let payload = Object.assign(route.params, {range: rangeToString.value})
@@ -261,19 +264,31 @@ const searchCell = function(){
     }
 }
 const flowSearch = function(dir){
+    let selected = document.querySelectorAll('.search-active');
+    for(let i = 0; i< selected.length;i++){
+        selected[i].classList.remove('search-active')
+    }
     switch(dir){
         case "up": {
-            if(searchable.value.active == 0 ) return false;
+            if(searchable.value.active == 0 ){
+                searchable.value.active = searchable.value.data.length
+                // return false;
+            } 
             let active = searchable.value.active - 1
             console.log(searchable.value)
             searchable.value.data[active].scrollIntoView({ block: 'center',  behavior: 'smooth' })
+            searchable.value.data[active].classList.add('search-active')
             searchable.value.active = active
         }break;
         case "down": {
-            if(searchable.value.active == searchable.value.data.length - 1) return false
+            if(searchable.value.active == searchable.value.data.length - 1){
+                searchable.value.active = -1
+                // return false
+            } 
             let active = searchable.value.active + 1
             console.log(searchable.value)
             searchable.value.data[active].scrollIntoView({ block: 'center',  behavior: 'smooth' })
+            searchable.value.data[active].classList.add('search-active')
             searchable.value.active = active
         } break;
     }
@@ -287,12 +302,18 @@ const clearTable = ()=>{
     for(let i = 0; i< selected.length;i++){
         selected[i].classList.remove('search-selected')
     }
+    let searchactive = document.querySelectorAll('.search-active');
+    for(let i = 0; i< searchactive.length;i++){
+        searchactive[i].classList.remove('search-active')
+    }
     searchable.value = {active: 0,data:[]}
 }
 </script>
 <style>
 .search-selected{
     box-shadow: inset 0px 0px 0px 2px #04c9f1;
+}
+.search-active{
     background-color: #04c9f174;
 }
 </style>

@@ -47,6 +47,11 @@ const getNotiClass =(noti)=>{
             cls.color = `text-slate-700`
             cls.hover = `hover:bg-slate-300`
         }break;
+        case "warning":{
+            cls.bg = `bg-orange-400/60`
+            cls.color = `text-slate-700`
+            cls.hover = `hover:bg-orange-400`
+        }break;
     }
     return cls;
 }

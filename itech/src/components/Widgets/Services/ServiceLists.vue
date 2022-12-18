@@ -206,6 +206,5 @@ onMounted(()=>{
             projectsData.value.data = res.data
         }
     })
-
 })
 </script>

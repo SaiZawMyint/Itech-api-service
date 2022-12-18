@@ -35,5 +35,7 @@ export const spreadsheet = {
         return data
     }
 }
-
+const checkAuth = function(){
+    
+}
 export default {spreadsheet}

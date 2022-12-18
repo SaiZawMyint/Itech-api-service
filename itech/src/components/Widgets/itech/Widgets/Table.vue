@@ -1,5 +1,5 @@
 <template>
-    <div class="overflow-auto relative shadow-md sm:rounded-lg dark:bg-gray-700 ring-2 max-h-[500px]">
+    <div class="overflow-auto relative shadow-md sm:rounded-lg dark:bg-gray-700 ring-2 max-h-[480px]">
         <table :id="id" class="w-full text-sm text-left text-gray-500 dark:text-gray-400 border-collapse border">
             <thead class="sticky top-0 text-xs text-gray-700 uppercase bg-gray-300 z-10 dark:bg-gray-700 dark:text-slate-400">
                 <tr>
@@ -13,8 +13,8 @@
                 <tr v-for="(d,index) in data" v-if="data.length > 0"
                     :class="getSelected(index)"
                     class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                    <th class="text-center border border-slate-200 sticky left-0">{{index + 1}}</th>
-                    <th :title="x" scope="row" class="py-3 overflow-hidden truncate max-w-[300px] px-4 font-medium border border-slate-200 text-gray-900 whitespace-nowrap dark:text-slate-200"
+                    <th class="text-center border border-slate-200 sticky bg-slate-100 left-0">{{index + 1}}</th>
+                    <th :title="x" scope="row" class="py-3  overflow-hidden truncate max-w-[300px] px-4 font-medium border border-slate-200 text-gray-900 whitespace-nowrap dark:text-slate-200"
                      v-for="x in d" @click="click" >
                         {{x}}
                     </th>

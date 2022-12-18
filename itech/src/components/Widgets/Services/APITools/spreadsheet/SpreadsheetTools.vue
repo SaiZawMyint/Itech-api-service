@@ -42,7 +42,7 @@
                         </a>
                     </div>
                 </button>
-                <div class="p-2" v-if="spreadsheets.length == 0">
+                <div class="p-2" v-if="!spreadsheets || spreadsheets.length == 0">
                     <p class="text-center w-full text-slate-500">You dosen't have any spreadsheet yet</p>
                     <button class="px-3 py-2 rounded-lg bg-slate-300 text-slate-800 mx-auto block" @click="createPrep">Create Spreadsheet</button>
                 </div>
@@ -70,8 +70,9 @@
                         type="submit"
                         v-if="spreadsheetInput.value && !spreadsheetInput.valid" class="px-4 py-2 ring-slate-200 ring-2 rounded-lg ml-4 btn primary">{{createModalText()}}</button>
                         <span v-else
-                            class="px-4 py-2 ring-slate-200 ring-2 rounded-lg ml-4 bg-slate-400 text-slate-800 cursor-not-allowed">
-                            {{createModalText()}}
+                            class="flex items-center jsutify-between px-3 py-2 ring-slate-200 ring-2 rounded-lg ml-4 bg-slate-400 text-slate-800 cursor-not-allowed">
+                            <img src="@img/loading-icon.svg" alt="" class="w-6 h-6 mr-2" v-if="createSpreadsheetOption.loading">
+                            <span>{{createModalText()}}</span>
                         </span>
                     </div>
                 </form>
@@ -148,7 +149,7 @@ const importAlertBox=ref({
 const importId = ref('')
 const spreadsheets = toRef(store.state.spreadsheet,'data')
 const spreadsheetInput = ref({value:'',valid: false,selectedId: null})
-const createSpreadsheetOption = ref({show:false,isEditing: false})
+const createSpreadsheetOption = ref({show:false,isEditing: false,loading: false})
 const deleteAlertBox = ref({show:false})
 
 const getParams = (id)=>{
@@ -163,6 +164,7 @@ const createPrep = function(){
     createSpreadsheetOption.value.isEditing = false
 }
 const createNewSpreadsheet = function(){
+
     spreadsheetInput.value.valid = true
     
     let payload = {
@@ -171,8 +173,10 @@ const createNewSpreadsheet = function(){
     if(createSpreadsheetOption.value.isEditing){
         payload.spreadsheetId = spreadsheetInput.value.selectedId 
     }
+    createSpreadsheetOption.value.loading = true
     store.dispatch(createSpreadsheetOption.value.isEditing ? `updateSpreadsheet` : `createSpreadsheet`,payload).then((res)=>{
         spreadsheetInput.value.valid = false
+        createSpreadsheetOption.value.loading = false
         if(res.ok){
             createSpreadsheetOption.value.show = false
             spreadsheetInput.value.value = null
@@ -187,7 +191,7 @@ const createNewSpreadsheet = function(){
             console.log(res)
             store.dispatch(`addNotification`,{
                     type: "error",
-                    message: res.error.message
+                    message: res.message
                 })
         }
     });
@@ -231,11 +235,19 @@ const spreadsheetActiveClass = function(id){
     return 'hover:bg-slate-200';
 }
 const importSheet = function(){
+    if(!importId.value){
+         store.dispatch('clearNotifications').then(()=>{
+                store.dispatch(`addNotification`,{
+                    type: "error",
+                    message:  "Spreadsheet id cannot be null"
+                })
+            })
+            return false;
+    }
     let payload = {
         id: props.id, payload: { spreadsheetId: importId.value }
     }
     store.dispatch(`importSpreadsheet`,payload).then((res)=>{
-        console.log(res)
         if(!res.ok){
             store.dispatch('clearNotifications').then(()=>{
                 store.dispatch(`addNotification`,{
@@ -243,12 +255,22 @@ const importSheet = function(){
                     message:  res.error && res.error.message ? res.error.message : res.message
                 })
             })
+        }else{
+            importAlertBox.value.show = false
         }
     })
 }
 onBeforeMount(() => {
     store.dispatch(`getSpreadsheets`,props.id).then((res)=>{
-        spreadsheets.value = res.data
+        console.log(res)
+        if(res.ok){
+            store.state.auth.status = false
+            spreadsheets.value = res.data
+        }else{
+            store.state.auth.status = true
+            store.state.auth.tokenAlertBox.show = true
+        }
+        
     }).catch((err)=>{
         console.log("Error : "+err)
     })

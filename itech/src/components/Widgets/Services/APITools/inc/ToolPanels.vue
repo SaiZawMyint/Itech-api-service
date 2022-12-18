@@ -1,13 +1,24 @@
 <template>
-    <div class="fixed top-0 left-0 w-[25%] p-2" style="top: 50px;height: calc(100% - 50px);z-index: 99;">
-        <div class="flex flex-col rounded-lg shadow h-full bg-slate-50">
+    <div id="tool-panel" class="fixed top-0 left-0 w-[25%] p-2" style="top: 50px;height: calc(100% - 50px);z-index: 99;">
+        <div class="flex flex-col rounded-lg shadow h-full bg-slate-50 overflow-hidden">
             <div class="px-3 py-2 border-b-2 flex items-center justify-between">
                 {{route.params.service}}
-                <button @click="openAuthorize"
-                    class="px-3 py-1 rounded-lg bg-slate-100 hover:bg-slate-100/50">Authorize</button>
+                <button @click="openAuthorize" class="relative px-3 py-1 rounded-lg bg-slate-100 hover:bg-slate-100/50">
+                    Authorize
+                    <span class="float-noti alert shadow-lg ring-2 ring-red-200" v-if="!store.state.auth.status"></span>
+                </button>
             </div>
             <SpreadsheetTools :id="route.params.id"></SpreadsheetTools>
         </div>
+        <button
+        id="tool-panel-hider"
+        @click="hideToolPanel"
+            class="absolute top-[20px] right-[-8px] flex items-center justify-center rounded-full w-6 h-6 bg-slate-200 ring-slate-300 ring-1 hover:bg-slate-200/50">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                stroke="currentColor" class="w-4 h-4">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+            </svg>
+        </button>
     </div>
     <Transition name="alert">
         <ModalBox title="Authorization" v-if="tokenAlertBox.show" :show="tokenAlertBox.show"
@@ -29,7 +40,8 @@
                     code</a>
                 <div class="p-2 w-[70%] mx-auto mb-4">
                     <div class="flex  rounded-lg overflow-hidden ring-1 ring-slate-400 text-sm">
-                        <input v-model="code" type="text" class="appereance-none px-3 py-2 w-full" placeholder="Enter auth code">
+                        <input v-model="code" type="text" class="appereance-none px-3 py-2 w-full"
+                            placeholder="Enter auth code">
                         <button class="px-3 hover:font-bold" @click="authorize">Authorize</button>
                     </div>
                 </div>
@@ -45,14 +57,13 @@ import { useRoute } from 'vue-router';
 import { useStore } from 'vuex';
 import SpreadsheetTools from '../spreadsheet/SpreadsheetTools.vue';
 import ModalBox from '../../../LightUI/ModalBox.vue';
+import itechDom from '../../../../../js/itech-dom'
 
 const store = useStore()
 const route = useRoute()
 const tokenURL = ref("")
 const code = ref("")
-const tokenAlertBox=ref({
-    show: false
-})
+const tokenAlertBox=ref(store.state.auth.tokenAlertBox)
 const props = defineProps({
     type:{
         type: String,
@@ -73,6 +84,12 @@ const authorize = function(){
             code.value = ""
         }
     })
+}
+const hideToolPanel = function(e){
+    const element = e.target
+    itechDom(element).toggleClass('active');
+    itechDom('#tool-panel').toggleClass('hide');
+    itechDom('#tool-dashboard').toggleClass('wide');
 }
 onMounted(()=>{
     tokenURL.value = `http://localhost:8001/itech/api/auth/request/code/${route.params.id}?service=SPREADSHEET&u_token=${store.state.user.token}`
