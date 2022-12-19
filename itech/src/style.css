@@ -164,8 +164,11 @@ input::-webkit-inner-spin-button {
 }
 
 .modal-box {
-    position: relative;
-    transition: all .2s cubic-bezier(0.075, 0.82, 0.165, 1);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    transition: all .2s;
     box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .15) !important;
 }
 
@@ -176,19 +179,21 @@ input::-webkit-inner-spin-button {
 }
 
 .alert-enter-active {
-    animation: fade 0.3s;
+    animation: fade 0.2s ;
 }
 
 .alert-leave-active {
-    animation: fade 0.3s reverse;
+    animation: fade .2s reverse;
 }
 
 .alert-enter-active .modal-box {
-    animation: alert 0.3s;
+    top: 45%;
+    animation: fade 2s;
 }
 
 .alert-leave-active .modal-box {
-    animation: alert 0.3s reverse;
+    top: 60%;
+    animation: fade 1s reverse;
 }
 
 @keyframes fade {
@@ -273,7 +278,7 @@ input::-webkit-inner-spin-button {
     background-color: var(--unseen-noti-color);
 }
 #tool-panel-hider{
-    transition: all .4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: all .2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 #tool-panel-hider svg{
     pointer-events: none;
@@ -282,13 +287,13 @@ input::-webkit-inner-spin-button {
     transform: rotate(180deg);
 }
 #tool-panel{
-    transition: all .4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: all .2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 #tool-panel.hide{
     width: 0 !important;
 }
 #tool-dashboard{
-    transition: all .4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: all .2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 #tool-dashboard.wide{
     width: 100% !important;

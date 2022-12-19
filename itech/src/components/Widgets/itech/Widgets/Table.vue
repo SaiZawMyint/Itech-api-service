@@ -3,11 +3,11 @@
         <table :id="id" class="w-full text-sm text-left text-gray-500 dark:text-gray-400 border-collapse border">
             <thead class="sticky top-0  text-xs text-gray-700 uppercase bg-gray-300 z-10 dark:bg-gray-700 dark:text-slate-400">
                 <tr>
-                    <th class="w-[45px] text-center py-3 px-3 border border-slate-200 sticky left-0 top-0 bg-gray-300 z-10">No.</th>
-                    <th scope="col" class="relative py-3 px-6 border border-slate-200 max-w-[300px] overflow-hidden resize-x" 
+                    <th class="w-[45px] max-w-[45px] text-center py-3 px-3 border border-slate-200 sticky left-0 top-0 bg-gray-300 z-10">No.</th>
+                    <th scope="col" class="relative py-3 px-6 border border-slate-200 overflow-hidden resize-x" 
                     :class="`z[${getTitle.length - index}]`"
                     v-for="(t,index) in getTitle">
-                        {{t}}
+                    <span class="absolute w-full h-full top-[50%] p-2 truncate  left-0 translate-y-[-50%] text-center">{{t}}</span>
                         <button 
                         @click="fix($event,index,'column')"
                         class="absolute left-[2px] bottom-[2px] flex items-center justify-center w-4 h-4 rounded lock-helper-btn">
@@ -39,9 +39,10 @@
                             </svg>
                         </button>
                     </th>
-                    <th :title="x" scope="row" class="py-3  overflow-hidden truncate max-w-[300px] px-4 font-medium border border-slate-200 text-gray-900 whitespace-nowrap dark:text-slate-200"
+                    <th :title="x" scope="row" class="relative h-[35px] overflow-hidden truncate font-medium border border-slate-200 text-gray-900 whitespace-nowrap dark:text-slate-200"
                      v-for="x in d" @click="click" :class="`tab-row-${index}`">
-                        {{x}}
+                     <span class="absolute w-full h-full top-[50%] p-2 truncate  left-0 translate-y-[-50%]">{{x}}</span>
+                        
                     </th>
                 </tr>
                 <tr v-else><td :colspan="title.length + 1" class="py-2 text-center">No Data</td></tr>
