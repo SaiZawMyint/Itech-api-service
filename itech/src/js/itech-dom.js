@@ -1,7 +1,8 @@
 const itechDom = function(selector){
     var selectors = $_(selector)
     function command(cmd) {
-        [].forEach.call(selectors, cmd);
+        selectors = selectors instanceof Element ? [selectors] : selectors;
+        [].forEach.call(selectors, cmd); 
     }
     return {
         toggleClass: function(cls){
@@ -29,6 +30,35 @@ const itechDom = function(selector){
                     ele.style.width = width
                 })
             }
+        },
+        addClass: function(cls = ''){
+            let clss = [cls]
+            if(cls.includes(' ')){
+                clss = cls.split(' ')
+            }
+            clss.forEach(c=>{
+                command(function(ele){
+                    ele.classList.add(c)
+                })
+            })
+        },
+        removeClass: function(cls = ''){
+            let clss = [cls]
+            if(cls.includes(' ')){
+                clss = cls.split(' ')
+            }
+            clss.forEach(c=>{
+                command(function(ele){
+                    ele.classList.remove(c)
+                })
+            })
+        },
+        hasClass: function(cls = ''){
+            let check = false;
+            command(function(ele){
+                check = ele.classList.contains(cls)
+            })
+            return check
         }
     }
 }

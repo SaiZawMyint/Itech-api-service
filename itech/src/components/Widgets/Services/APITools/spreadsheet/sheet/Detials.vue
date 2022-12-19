@@ -62,6 +62,7 @@
         <div class="w-full rounded-lg shadow overflow-hidden mb-4">
             <Table v-bind:data="sheetProps.values" :selected="selectedProps" @table-click="tableClick" 
             id="record-table"
+            v-if="refreshTable"
             />
         </div>
     </div>
@@ -159,6 +160,7 @@ const store = useStore()
 const sheetProps = toRef(store.state.sheet,'data')
 const selectedProps = ref([{row:undefined,column: undefined}])
 const route = useRoute()
+const refreshTable = ref(true)
 const operations = ref({
     start: {
         range: ``,
@@ -229,6 +231,8 @@ const applyFilter = function(){
                         message: "Apply filter success!"
                     })
                 })
+                refreshTable.value = false;
+                refreshTable.value = true;
             }
         })
 }
@@ -260,7 +264,6 @@ const searchCell = function(){
                 }
             }
         })
-        
     }
 }
 const flowSearch = function(dir){
