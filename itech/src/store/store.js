@@ -44,7 +44,7 @@ const servicesModule = {
 }
 const projectModule = {
     state: ()=>({
-        data:[]
+        data:{}
     }),
     actions: {
         async createProject({commit}, payload){
@@ -67,12 +67,16 @@ const projectModule = {
     },
     mutations: {
         storeProject: (state,data)=>{
-            for(let d of state.data){
-                delete d.active
+            console.log(data)
+            for(let key in state.data){
+                for(let d of state.data[key]){
+                    delete d.active
+                }
             }
-            state.data.push(Object.assign(data, {active: true}))
+            state.data[data.serviceType].push(Object.assign(data, {active: true}))
         },
         putProject: (state,data)=>{
+            console.log(data)
             state.data = data
         }
     }
@@ -101,7 +105,7 @@ const spreadsheetModule = {
                 commit('clearSheetData');
                 return false;
             }
-            return axiosClient.get(`/${payload.service}/${payload.id}/${payload.spreadsheetId}/sheets`).then(({data})=>{
+            return axiosClient.get(`/spreadsheet/${payload.id}/${payload.spreadsheetId}/sheets`).then(({data})=>{
                 if(data.ok) commit('storeSheets',{spreadsheetId: payload.spreadsheetId,data: data.data});
                 return data;
             }).catch((err)=>{

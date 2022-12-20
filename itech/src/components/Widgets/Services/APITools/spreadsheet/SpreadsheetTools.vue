@@ -226,7 +226,7 @@ const createModalText = function(){
     return createSpreadsheetOption.value.isEditing ? "Update" : "Create"
 }
 const chooseProjectService= (id)=>{
-    router.push({name: 'itech.service.sheets',params:getParams(id)})
+    router.push({name: 'itech.spreadsheet.sheets',params:getParams(id)})
 }
 const spreadsheetActiveClass = function(id){
     if(route.params.spreadsheetId == id){

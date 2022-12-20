@@ -119,7 +119,7 @@ const createModalText = function(){
     return createSheetOption.value.isEditing ? "Update" : "Create"
 }
 const openSheet = function(sheet){
-    router.push({name: 'itech.service.sheets.details',params:{spreadsheetId: route.params.spreadsheetId,sheetId: sheet.sheetId}})
+    router.push({name: 'itech.spreadsheet.sheets.details',params:{spreadsheetId: route.params.spreadsheetId,sheetId: sheet.sheetId}})
 }
 </script>
 

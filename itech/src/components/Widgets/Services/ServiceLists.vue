@@ -16,7 +16,7 @@
         </div>
         <div class="w-full grid grid-cols-4 grid-flow-col gap-2">
             <button class="rounded-lg max-w-[250px] ring-blue-300 focus:ring-2 overflow-hidden border-2 shadow flex flex-col m-4 cursor-pointer
-            hover:shadow-lg" @click="setup(`spreadsheet`)">
+            hover:shadow-lg" @click="setup(`SPREADSHEET`)">
                 <div class="w-full">
                     <img src="@img/google-spreadsheet-api-logo.png" alt="" class="block w-full">
                 </div>
@@ -24,7 +24,9 @@
                     <h2 class="px-2">Google Spreadsheet API</h2>
                 </div>
             </button>
-            <div tabindex="-1" class="rounded-lg max-w-[250px] ring-blue-300 focus:ring-2 overflow-hidden border-2 shadow flex flex-col m-4 cursor-pointer
+            <button 
+            @click="setup(`DRIVE`)"
+            class="rounded-lg max-w-[250px] ring-blue-300 focus:ring-2 overflow-hidden border-2 shadow flex flex-col m-4 cursor-pointer
             hover:shadow-lg">
                 <div class="w-full">
                     <img src="@img/google-drive-api-logo.png" alt="" class="block w-full">
@@ -32,7 +34,7 @@
                 <div class="p-2">
                     <h2 class="px-2">Google Drive API</h2>
                 </div>
-            </div>
+            </button>
         </div>
     </div>
     <Transition name="alert">
@@ -42,7 +44,7 @@
                 <div class="w-full p-4 relative z-10">
                     <div class="my-2" v-if="!showCreateForm">
                         <span class="text-sm px-2 text-gray-400">Select Project</span>
-                        <SelectWidget :data="projectsData.data" :max="{height:'max-h-[150px]'}"
+                        <SelectWidget :data="projectsData.data[setUpBox.title]" :max="{height:'max-h-[150px]'}"
                             @changes="changesHandler" placeholder="Select Project">
                         </SelectWidget>
                     </div>
@@ -142,7 +144,6 @@ const changesHandler = function(data){
 const setup = function(service){
     setUpBox.value.show = true;
     setUpBox.value.title = service
-    
 }
 const projectJSON = function(e){
     const [file] = e.target.files
@@ -172,7 +173,7 @@ const createWatcher = ref({
     message: "",
 })
 const createProject = function(){
-    store.dispatch('createProject',createProjectForm.value).then((res)=>{
+    store.dispatch('createProject',Object.assign({'serviceType':setUpBox.value.title},createProjectForm.value)).then((res)=>{
         if(res.ok){
             document.getElementById('create-project-form').reset()
             createProjectForm.value = {}
@@ -196,7 +197,7 @@ const createProject = function(){
 }
 const openAPI = function(){
     store.dispatch(`addService`,{type: setUpBox.value.title, data: spreadsheetSelectedProject.value.data})
-    router.push({name: 'itech.service.shome',params:{service: setUpBox.value.title,id: spreadsheetSelectedProject.value.data.id}})
+    router.push({name: 'itech.spreadsheet.shome',params:{service: setUpBox.value.title.toLocaleLowerCase(),id: spreadsheetSelectedProject.value.data.id}})
 }
 onMounted(()=>{
     store.dispatch('getSpreadsheetProjects').then((res)=>{

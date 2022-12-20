@@ -43,21 +43,35 @@ const routes = [
                 path: '/itech/home', name: 'itech.home', component: ServiceLists
             },
             {
-                path: '/itech/:service/:id', 
-                name: 'itech.service', 
+                path: '/itech/spreadsheet/:id', 
+                name: 'itech.spreadsheet', 
                 redirect: {
-                    name: 'itech.service.shome'
+                    name: 'itech.spreadsheet.shome'
                 },
                 meta:{service: 'SPREADSHEET'},
                 component: ToolDashboard,
                 children: [
                     {
-                        path: 'service', 'name': 'itech.service.shome',component: SheetHome,
+                        path: 'service', 'name': 'itech.spreadsheet.shome',component: SheetHome,
                     },
                     {
-                        path: 'service/:spreadsheetId?', 'name': 'itech.service.sheets',component: SheetLists,
+                        path: 'service/:spreadsheetId?', 'name': 'itech.spreadsheet.sheets',component: SheetLists,
                     },
-                    {path: 'service/:spreadsheetId/:sheetId',name: 'itech.service.sheets.details', component:Detials}
+                    {path: 'service/:spreadsheetId/:sheetId',name: 'itech.spreadsheet.sheets.details', component:Detials}
+                ]
+            },
+            {
+                path: '/itech/drive/:id', 
+                name: 'itech.drive', 
+                redirect: {
+                    name: 'itech.drive.shome'
+                },
+                meta:{service: 'DRIVE'},
+                component: ToolDashboard,
+                children: [
+                    {
+                        path: 'service', 'name': 'itech.drive.shome',component: SheetHome,
+                    }
                 ]
             },
             
@@ -84,7 +98,7 @@ router.beforeEach((to, from, next) => {
 
 async function process(to,from){
     let callData = []
-    if(to.name == 'itech.service.sheets'){
+    if(to.name == 'itech.spreadsheet.sheets'){
         callData.push(store.dispatch(`getSpreadsheetsData`,to.params).then((res)=>{
             if(!res) return null
             if(!res.ok){
@@ -95,7 +109,7 @@ async function process(to,from){
             }
         }))
     }
-    if(to.name == 'itech.service.sheets.details'){
+    if(to.name == 'itech.spreadsheet.sheets.details'){
         let payload = Object.assign(to.params, {range: "A1:J30"})
         callData.push(store.dispatch(`getSheetDetailData`,payload).then((res)=>{
             if(!res.ok){
