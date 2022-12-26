@@ -8,7 +8,8 @@
                     <span class="float-noti alert shadow-lg ring-2 ring-red-200" v-if="!store.state.auth.status"></span>
                 </button>
             </div>
-            <SpreadsheetTools :id="route.params.id"></SpreadsheetTools>
+            <SpreadsheetTools v-if="getServiceTools.isSpreadsheetService()" :id="route.params.id" />
+            <DriveTools v-if="getServiceTools.isDriveService()" :id="route.params.id"/>
         </div>
         <button
         id="tool-panel-hider"
@@ -58,6 +59,8 @@ import { useStore } from 'vuex';
 import SpreadsheetTools from '../spreadsheet/SpreadsheetTools.vue';
 import ModalBox from '../../../LightUI/ModalBox.vue';
 import itechDom from '../../../../../js/itech-dom'
+import { computed } from '@vue/reactivity';
+import DriveTools from '../drive/DriveTools.vue';
 
 const store = useStore()
 const route = useRoute()
@@ -78,7 +81,7 @@ const openAuthorize = function(){
     tokenAlertBox.value.show=true
 }
 const authorize = function(){
-    store.dispatch('authorize',{service: 'SPREADSHEET',id: route.params.id, code: code.value}).then((res)=>{
+    store.dispatch('authorize',{service: route.meta.service,id: route.params.id, code: code.value}).then((res)=>{
         if(res.ok){
             tokenAlertBox.value.show = false
             code.value = ""
@@ -91,7 +94,18 @@ const hideToolPanel = function(e){
     itechDom('#tool-panel').toggleClass('hide');
     itechDom('#tool-dashboard').toggleClass('wide');
 }
-onMounted(()=>{
-    tokenURL.value = `http://localhost:8001/itech/api/auth/request/code/${route.params.id}?service=SPREADSHEET&u_token=${store.state.user.token}`
+const getServiceTools = computed(()=>{
+    return {
+        isSpreadsheetService: ()=>{
+            return route.meta.service === 'SPREADSHEET'
+        },
+        isDriveService: ()=>{
+            return route.meta.service === 'DRIVE'
+        }
+    }
 })
+onMounted(()=>{
+    tokenURL.value = `http://localhost:8001/itech/api/auth/request/code/${route.params.id}?service=${route.meta.service}&u_token=${store.state.user.token}`
+})
+
 </script>

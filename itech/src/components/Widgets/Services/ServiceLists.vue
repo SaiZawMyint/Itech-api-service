@@ -106,6 +106,7 @@ import itechObject from '../../../js/itech-objects'
 import { useStore } from 'vuex';
 import itech from '../../../js/itech';
 import { useRouter } from 'vue-router'
+import { computed } from '@vue/reactivity';
 
 const store = useStore()
 const router = useRouter()
@@ -164,9 +165,9 @@ const projectJSON = function(e){
         }
     })
 }
-const validateSpreadsheetClient = function(json){
+// const validateSpreadsheetClient = function(json){
     
-}
+// }
 const createWatcher = ref({
     show: false,
     error: false,
@@ -197,8 +198,21 @@ const createProject = function(){
 }
 const openAPI = function(){
     store.dispatch(`addService`,{type: setUpBox.value.title, data: spreadsheetSelectedProject.value.data})
-    router.push({name: 'itech.spreadsheet.shome',params:{service: setUpBox.value.title.toLocaleLowerCase(),id: spreadsheetSelectedProject.value.data.id}})
+    router.push({name: getServiceName.value,params:{service: setUpBox.value.title.toLocaleLowerCase(),id: spreadsheetSelectedProject.value.data.id}})
 }
+const getServiceName = computed(()=>{
+    switch(setUpBox.value.title){
+        case "SPREADSHEET":{
+            return 'itech.spreadsheet.shome'
+        }
+        case "DRIVE":{
+            return 'itech.drive.shome'
+        }
+        default: {
+            return 'home'
+        }
+    }
+})
 onMounted(()=>{
     store.dispatch('getSpreadsheetProjects').then((res)=>{
         if(res.data.length == 0){
