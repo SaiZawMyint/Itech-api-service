@@ -1,6 +1,6 @@
 <template>
     <div id="tool-panel" class="fixed top-0 left-0 w-[25%] p-2" style="top: 50px;height: calc(100% - 50px);z-index: 99;">
-        <div class="flex flex-col rounded-lg shadow h-full bg-slate-50 overflow-hidden">
+        <div class="flex flex-col rounded-lg shadow h-full bg-slate-50">
             <div class="px-3 py-2 border-b-2 flex items-center justify-between">
                 {{route.meta.service}}
                 <button @click="openAuthorize" class="relative px-3 py-1 rounded-lg bg-slate-100 hover:bg-slate-100/50">
@@ -92,6 +92,7 @@ const hideToolPanel = function(e){
     const element = e.target
     itechDom(element).toggleClass('active');
     itechDom('#tool-panel').toggleClass('hide');
+    itechDom(document.getElementById('tool-panel').firstElementChild).toggleClass('overflow-hidden')
     itechDom('#tool-dashboard').toggleClass('wide');
 }
 const getServiceTools = computed(()=>{

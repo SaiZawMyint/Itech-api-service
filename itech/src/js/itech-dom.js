@@ -5,7 +5,7 @@ const itechDom = function(selector){
         [].forEach.call(selectors, cmd); 
     }
     return {
-        toggleClass: function(cls){
+        toggleClass: function(cls=''){
             if(selectors instanceof HTMLElement){
                 toggle(selectors)
             }else{
@@ -15,11 +15,15 @@ const itechDom = function(selector){
             }
             
             function toggle(ele){
-                if(ele.classList.contains(cls)){
-                    ele.classList.remove(cls)
-                }else{
-                    ele.classList.add(cls)
-                }
+                let c = cls.includes(' ') ? cls.trim().split(' ') : [cls]
+                c.forEach((o)=>{
+                    if(ele.classList.contains(o)){
+                        ele.classList.remove(o)
+                    }else{
+                        ele.classList.add(o)
+                    }
+                })
+                
             }
         },
         width: function(width){

@@ -62,17 +62,17 @@
                 </div>
             </template>
             <template v-slot:content>
-                <p class="text-center">{{createModalText()}} spreadsheet</p>
+                <p class="text-center">{{createModalText}} spreadsheet</p>
                 <form @submit.prevent="createNewSpreadsheet" class="p-2 w-[80%] mx-auto mb-2">
                     <input v-model="spreadsheetInput.value" type="text" class="appereance-none px-3 py-2 w-full rounded-lg" placeholder="Spreadsheet name">
                     <div class="flex items-center justify-center p-4">
                         <button 
                         type="submit"
-                        v-if="spreadsheetInput.value && !spreadsheetInput.valid" class="px-4 py-2 ring-slate-200 ring-2 rounded-lg ml-4 btn primary">{{createModalText()}}</button>
+                        v-if="spreadsheetInput.value && !spreadsheetInput.valid" class="px-4 py-2 ring-slate-200 ring-2 rounded-lg ml-4 btn primary">{{createModalText}}</button>
                         <span v-else
                             class="flex items-center jsutify-between px-3 py-2 ring-slate-200 ring-2 rounded-lg ml-4 bg-slate-400 text-slate-800 cursor-not-allowed">
                             <img src="@img/loading-icon.svg" alt="" class="w-6 h-6 mr-2" v-if="createSpreadsheetOption.loading">
-                            <span>{{createModalText()}}</span>
+                            <span>{{createModalText}}</span>
                         </span>
                     </div>
                 </form>
@@ -129,6 +129,7 @@
 </template>
 
 <script setup>
+import { computed } from '@vue/reactivity';
 import { onBeforeMount, ref, toRef } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useStore } from 'vuex';
@@ -222,9 +223,9 @@ const deleteSpreadsheet = function(){
         
     })
 }
-const createModalText = function(){
+const createModalText = computed(()=>{
     return createSpreadsheetOption.value.isEditing ? "Update" : "Create"
-}
+})
 const chooseProjectService= (id)=>{
     router.push({name: 'itech.spreadsheet.sheets',params:getParams(id)})
 }

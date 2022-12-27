@@ -309,6 +309,54 @@ const setting = {
         progress: false
     })
 }
+const drive = {
+    state: ()=>({
+        user:{},
+        storageQuota:{},
+        drive:{
+            folders:[]
+        }
+    }),
+    actions:{
+        async getDriveInfo({commit},id){
+            return axiosClient.get(`/drive/${id}/info`).then(({data})=>{
+                if(data.ok) commit('driveInfo',data.data)
+                return data
+            }).catch(err=>{
+                return err
+            })
+        },
+        async getDriveFolders({commit}, id){
+            return axiosClient.get(`/drive/${id}/folders`).then(({data})=>{
+                if(data.ok) commit('putFolderData',data.data)
+                return data
+            })
+        }
+        ,
+        async createDriveFolder({commit},payload){
+            return axiosClient.post(`/drive/${payload.id}/folder/create`,payload.payload)
+            .then(({data})=>{
+                if(data.ok) commit('addFolderData',data.data)
+                return data
+            }).catch((err)=>{
+                if(err.response && err.response.data) return err.response.data
+                return err
+            })
+        }
+    },
+    mutations:{
+        driveInfo: (state,data)=>{
+            state.user = data.user
+            state.storageQuota = data.storageQuota
+        },
+        putFolderData: (state,data)=>{
+            state.drive.folders = data
+        },
+        addFolderData: (state,data)=>{
+            state.drive.folders.push(data)
+        }
+    }
+}
 const store = createStore({
     modules: {
         user: userModule,
@@ -318,7 +366,8 @@ const store = createStore({
         spreadsheet: spreadsheetModule,
         notification: notificationModule,
         sheet: sheetData,
-        setting: setting
+        setting: setting,
+        drive
     }
 })
 

@@ -1,6 +1,6 @@
 <template>
     <div class="fixed top-0 left-0 p-2 w-full bg-gray-100/40 backdrop-blur sm shadow-sm header">
-        <div class="w-full max-w-[85%] flex items-center justify-between header mx-auto">
+        <div class="w-full max-w-[100%] flex items-center justify-between header mx-auto">
 
             <div class="logo flex items-end justify-start">
                 <router-link :to="{name:'top'}">
@@ -21,7 +21,7 @@
                 </router-link>
                 <button
                     class="rounded-full flex items-center justify-start px-2 py-1 hover:font-bold hover:text-[#0f857d] mr-2"
-                    :class="route.name == 'service' ? 'text-[#0f857d] font-bold':''">
+                    :class="route.meta.APITOOL ? 'text-[#0f857d] font-bold':''">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                         stroke="currentColor" class="w-4 h-4">
                         <path stroke-linecap="round" stroke-linejoin="round"

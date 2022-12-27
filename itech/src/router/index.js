@@ -10,6 +10,8 @@ import ToolDashboard from '../components/Widgets/Services/APITools/ToolDashboard
 
 import SheetLists from '../components/Widgets/Services/APITools/spreadsheet/sheet/SheetLists.vue'
 import SheetHome from '../components/Widgets/Services/APITools/spreadsheet/sheet/SheetHome.vue'
+import DriveHome from '../components/Widgets/Services/APITools/drive/DriveHome.vue'
+
 import Detials from '../components/Widgets/Services/APITools/spreadsheet/sheet/Detials.vue'
 import store from '../store/store'
 
@@ -48,7 +50,7 @@ const routes = [
                 redirect: {
                     name: 'itech.spreadsheet.shome'
                 },
-                meta:{service: 'SPREADSHEET'},
+                meta:{service: 'SPREADSHEET',APITOOL: true},
                 component: ToolDashboard,
                 children: [
                     {
@@ -66,11 +68,11 @@ const routes = [
                 redirect: {
                     name: 'itech.drive.shome'
                 },
-                meta:{service: 'DRIVE'},
+                meta:{service: 'DRIVE',APITOOL: true},
                 component: ToolDashboard,
                 children: [
                     {
-                        path: 'service', 'name': 'itech.drive.shome',component: SheetHome,
+                        path: 'service', 'name': 'itech.drive.shome',component: DriveHome,
                     }
                 ]
             },
@@ -124,17 +126,34 @@ async function process(to,from){
         console.log(to.params)
         switch(to.meta.service){
             case "SPREADSHEET":{
-                callData.push(store.dispatch(`checkStatus`,to.params.id).then((res)=>{
-                    if(!res.ok){
-                        store.dispatch('clearNotifications').then(()=>{
-                            store.dispatch(`addNotification`,{
-                                type: "warning",
-                                message: res.message
-                            })
+                callData.push(checkTokenStatus(to.params.id))
+            } break
+            case "DRIVE" : {
+                callData.push(callData.push(checkTokenStatus(to.params.id).then((res)=>{
+                    if(res.ok){
+                        return store.dispatch(`getDriveInfo`,to.params.id).then((res)=>{
+                            if(res.ok){
+                                return store.dispatch(`getDriveFolders`,to.params.id).then((res)=>{
+                                    console.log(res)
+                                })
+                            }
                         })
                     }
-                }))
-            }break
+                })))
+            }
+        }
+        async function checkTokenStatus(id){
+            return store.dispatch(`checkStatus`,id).then((res)=>{
+                if(!res.ok){
+                    store.dispatch('clearNotifications').then(()=>{
+                        store.dispatch(`addNotification`,{
+                            type: "warning",
+                            message: res.message
+                        })
+                    })
+                }
+                return res
+            })
         }
     }
     return Promise.all(callData)

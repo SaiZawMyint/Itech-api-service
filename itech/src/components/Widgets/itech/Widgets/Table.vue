@@ -53,7 +53,7 @@
 
 <script setup>
 import { computed } from '@vue/reactivity';
-import { defineEmits,ref } from 'vue';
+import { ref } from 'vue';
 import itechDom from '../../../../js/itech-dom';
 import itechObject from '../../../../js/itech-objects'
 const props = defineProps({
