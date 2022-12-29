@@ -8,25 +8,20 @@
                     <button class="px-3 py-2 mx-1 text-sm rounded-lg bg-slate-200 hover:bg-slate-300"
                         @click.stop="createPrep">Create</button>
                 </template>
-                <div class="px-2 rounded text-sm">
-                    <button @click.stop="chooseProjectService(spreadsheet.refId)"
+                <div class="px-2 rounded">
+                    <button @click.stop="chooseProjectService(drive.refId)"
                         class="w-full my-1 px-3 py-2 flex items-center justify-between rounded-lg bg-slate-100 cursor-pointer text-slate-800"
-                        :class="driveFolderActiveClass(spreadsheet.refId)" v-for="spreadsheet in drives">
+                        :class="driveFolderActiveClass(drive.refId)" v-for="drive in drives">
                         <div class="flex items-center max-w-[50%]">
-                            <span class="text-green-700">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                                    class="w-5 h-5">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M2.25 12.75V12A2.25 2.25 0 014.5 9.75h15A2.25 2.25 0 0121.75 12v.75m-8.69-6.44l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z" />
-                                </svg>
+                            <span class="text-gray-500 w-6 h-6 flex items-center justify-center">
+                                <font-awesome-icon icon="folder" />
                             </span>
-                            
-                            <span class="px-2 truncate">{{ spreadsheet.name }}</span>
+                            <span class="px-2 truncate">{{ drive.name }}</span>
                         </div>
-                        <div class="flex items-center" v-if="route.params.spreadsheetId == spreadsheet.refId">
+                        <div class="flex items-center" v-if="route.params.driveFolderId == drive.refId">
                             <button
                                 class="w-6 h-6 mx-1 flex bg-slate-200 items-center justify-center rounded-full hover:bg-blue-600/50"
-                                @click.stop="edit(spreadsheet)">
+                                @click.stop="edit(drive)">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                     stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
                                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -35,14 +30,14 @@
                             </button>
                             <button
                                 class="w-6 h-6 flex bg-slate-200 items-center justify-center rounded-full hover:bg-red-600/50"
-                                @click.stop="alertDelete(spreadsheet.refId)">
+                                @click.stop="alertDelete(drive.refId)">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                     stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
                                     <path stroke-linecap="round" stroke-linejoin="round"
                                         d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
                                 </svg>
                             </button>
-                            <a :href="spreadsheet.link" target="_blank"
+                            <a :href="drive.link" target="_blank"
                                 class="w-6 mx-1 h-6  bg-slate-200 flex items-center justify-center rounded-full hover:bg-green-600/50">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
                                     stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
@@ -77,7 +72,7 @@
                     :primary-bar-color="progressColor(calculatePercentageStorage)" />
                 <template v-slot:data>
                     <div
-                        class="min-w-[300px] ring-slate-300/50 ring-2 w-[fit-content] max-w-[600px] ml-2 bg-gray-200/40 backdroup-blur-sm rounded shadow flex flex-col">
+                        class="min-w-[300px] ring-slate-300/80 ring-2 w-[fit-content] max-w-[600px] ml-2 bg-gray-200/90 backdroup-blur-sm rounded shadow-lg flex flex-col">
                         <div class="border-b py-1 border-1 flex items-center justify-between">
                             <div class="flex items-center">
                                 <div class="w-8 h-8 rounded-full flex items-center justify-center">
@@ -174,11 +169,11 @@
             <template v-slot:content>
                 <p class="p-2 text-center text-slate-400 text-sm">Please import your Drive Folder Id</p>
                 <div class="p-2 w-[70%] mx-auto mb-4">
-                    <div class="flex  rounded-lg overflow-hidden ring-1 ring-slate-400 text-sm">
+                    <form @submit.prevent="importDriveFolder" class="flex  rounded-lg overflow-hidden ring-1 ring-slate-400 text-sm">
                         <input v-model="importId" type="text" class="appereance-none px-3 py-2 w-full"
                             placeholder="Folder Id">
-                        <button class="px-3 hover:font-bold" @click="importSheet">Import</button>
-                    </div>
+                        <button type="submit" class="px-3 hover:font-bold">Import</button>
+                    </form>
                 </div>
             </template>
         </ModalBox>
@@ -194,10 +189,11 @@ import ToolTips from '../../../itech/Widgets/ToolTips.vue';
 import itechObject from '../../../../../js/itech-objects'
 import { useStore } from 'vuex';
 import ModalBox from '../../../LightUI/ModalBox.vue';
-import { useRoute } from 'vue-router';
-
+import { useRoute, useRouter } from 'vue-router';
+import imageURL from '@img/logo.svg'
 const store = useStore()
 const route = useRoute()
+const router = useRouter()
 
 const createDriveFolderOption = ref({show:false,isEditing: false,loading: false})
 const driveFolderInput = ref({value:'',valid: false,selectedId: null})
@@ -221,7 +217,7 @@ const createPrep = function(){
 const user = ref({
     "kind": "drive#user",
     "displayName": "Loading",
-    "photoLink": "@img/logo.svg",
+    "photoLink": imageURL,
     "me": true,
     "permissionId": "null",
     "emailAddress": "..."
@@ -235,8 +231,10 @@ const storageQuota = ref({
 })
 
 onMounted(() => {
-    user.value = store.state.drive.user
-    storageQuota.value = store.state.drive.storageQuota
+    if(store.state.drive.user != null && store.state.drive.storageQuota!=null){
+        user.value = store.state.drive.user
+        storageQuota.value = store.state.drive.storageQuota
+    }
 })
 
 const createNewDriveFolder = function () {
@@ -272,15 +270,50 @@ const createNewDriveFolder = function () {
         }
     });
 }
+const getParams = (id)=>{
+    let param = Object.assign({},route.params)
+    param.driveFolderId = id
+    return param
+}
+const chooseProjectService= (id)=>{
+    router.push({name: 'itech.drive.files',params:getParams(id)})
+}
 
+const importDriveFolder = function(){
+    if(!importId.value){
+         store.dispatch('clearNotifications').then(()=>{
+                store.dispatch(`addNotification`,{
+                    type: "error",
+                    message:  "folder id cannot be null"
+                })
+            })
+            return false;
+    }
+    let payload = {
+        id: props.id, payload: { id: importId.value }
+    }
+    store.dispatch(`importDriveFolder`,payload).then((res)=>{
+        if(!res.ok){
+            store.dispatch('clearNotifications').then(()=>{
+                store.dispatch(`addNotification`,{
+                    type: "error",
+                    message:  res.error && res.error.message ? res.error.message : res.message
+                })
+            })
+        }else{
+            importAlertBox.value.show = false
+        }
+    })
+}
 const calculatePercentageStorage = computed(() => {
+    if(storageQuota.value.usage == 0 && storageQuota.value.limit == 0) return 0
     return Math.floor((storageQuota.value.usage / storageQuota.value.limit) * 100)
 })
 const createModalText = computed(()=>{
     return createDriveFolderOption.value.isEditing ? "Update" : "Create"
 })
 const driveFolderActiveClass = function(id){
-    if(route.params.spreadsheetId == id){
+    if(route.params.driveFolderId == id){
         return 'bg-slate-400 hover:bg-slate-400/80';
     }
     return 'hover:bg-slate-200';

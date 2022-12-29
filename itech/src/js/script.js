@@ -1,3 +1,11 @@
+import zipFile from '../assets/img/icons/zip-icon.png';
+import textFile from '../assets/img/icons/text-icon.png';
+import unknowFile from '../assets/img/icons/unknow-icon.png';
+import excel from '../assets/img/icons/Google_Sheets_Logo.svg'
+import pdf from '../assets/img/icons/pdf-icon.png';
+import docx from '../assets/img/icons/docx-icon.png';
+import archive from '../assets/img/icons/archive-icon.png';
+import folder from '../assets/img/icons/folder-icon.svg';
 
 export const spreadsheet = {
     getRange: (range = "")=>{
@@ -35,7 +43,34 @@ export const spreadsheet = {
         return data
     }
 }
-const checkAuth = function(){
-    
+export const fileTypeLogo = (type)=>{
+    switch(type){
+        case "txt":{
+            return textFile
+        }
+        case "zip":{
+            return zipFile
+        }
+        case "xlsx":{
+            return excel
+        }
+        case "unknow":{
+            return unknowFile
+        }case "pdf":{
+            return pdf
+        }
+        case "docx":{
+            return docx
+        }
+        case "archived":{
+            return archive
+        }
+        case "drive-folder":{
+            return folder
+        }
+        default:{
+            return unknowFile
+        }
+    }
 }
-export default {spreadsheet}
+export default {spreadsheet,fileTypeLogo}

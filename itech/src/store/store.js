@@ -311,8 +311,8 @@ const setting = {
 }
 const drive = {
     state: ()=>({
-        user:{},
-        storageQuota:{},
+        user:null,
+        storageQuota:null,
         drive:{
             folders:[]
         }
@@ -342,6 +342,15 @@ const drive = {
                 if(err.response && err.response.data) return err.response.data
                 return err
             })
+        },
+        async importDriveFolder({commit}, payload){
+            return axiosClient.post(`/drive/${payload.id}/folders/import`,payload.payload).then(({data})=>{
+                if(data.ok) commit('addFolderData',data.data)
+                return data
+            }).catch((err)=>{
+                if(err.response && err.response.data) return err.response.data
+                return err
+            })
         }
     },
     mutations:{
@@ -357,6 +366,31 @@ const drive = {
         }
     }
 }
+const driveFile = {
+    state: ()=>({
+        file: {},
+        children: []
+    }),
+    actions:{
+        async getDriveFiles({commit}, payload = {id:null,fileId:null}){
+            return axiosClient.get(`/drive/${payload.id}/drivefile/${payload.fileId}?files=${true}`)
+            .then(({data})=>{
+                console.log(data)
+                if(data.ok) commit('putDriveFileData',data.data)
+                return data
+            }).catch((err)=>{
+                if(err.response && err.response.data) return err.response.data
+                return err
+            })
+        }
+    },
+    mutations: {
+        putDriveFileData: (state, data)=>{
+            state.file = data.file
+            state.children = data.children
+        }
+    }
+}
 const store = createStore({
     modules: {
         user: userModule,
@@ -367,7 +401,8 @@ const store = createStore({
         notification: notificationModule,
         sheet: sheetData,
         setting: setting,
-        drive
+        drive,
+        driveFile
     }
 })
 

@@ -11,6 +11,7 @@ import ToolDashboard from '../components/Widgets/Services/APITools/ToolDashboard
 import SheetLists from '../components/Widgets/Services/APITools/spreadsheet/sheet/SheetLists.vue'
 import SheetHome from '../components/Widgets/Services/APITools/spreadsheet/sheet/SheetHome.vue'
 import DriveHome from '../components/Widgets/Services/APITools/drive/DriveHome.vue'
+import DriveFileLists from '../components/Widgets/Services/APITools/drive/DriveFileLists.vue'
 
 import Detials from '../components/Widgets/Services/APITools/spreadsheet/sheet/Detials.vue'
 import store from '../store/store'
@@ -73,7 +74,10 @@ const routes = [
                 children: [
                     {
                         path: 'service', 'name': 'itech.drive.shome',component: DriveHome,
-                    }
+                    },
+                    {
+                        path: 'service/:driveFolderId?', 'name': 'itech.drive.files',component: DriveFileLists,
+                    },
                 ]
             },
             
@@ -100,28 +104,6 @@ router.beforeEach((to, from, next) => {
 
 async function process(to,from){
     let callData = []
-    if(to.name == 'itech.spreadsheet.sheets'){
-        callData.push(store.dispatch(`getSpreadsheetsData`,to.params).then((res)=>{
-            if(!res) return null
-            if(!res.ok){
-                store.dispatch(`addNotification`,{
-                    type: "error",
-                    message: res.error && res.error.message ? res.error.message : res.message
-                })
-            }
-        }))
-    }
-    if(to.name == 'itech.spreadsheet.sheets.details'){
-        let payload = Object.assign(to.params, {range: "A1:J30"})
-        callData.push(store.dispatch(`getSheetDetailData`,payload).then((res)=>{
-            if(!res.ok){
-                store.dispatch(`addNotification`,{
-                    type: "error",
-                    message: res.error.message ? res.error.message : res.message
-                })
-            }
-        }))
-    }
     if(to.meta && 'service' in to.meta){
         console.log(to.params)
         switch(to.meta.service){
@@ -155,6 +137,37 @@ async function process(to,from){
                 return res
             })
         }
+    }
+    if(to.name == 'itech.spreadsheet.sheets'){
+        callData.push(store.dispatch(`getSpreadsheetsData`,to.params).then((res)=>{
+            if(!res) return null
+            if(!res.ok){
+                store.dispatch(`addNotification`,{
+                    type: "error",
+                    message: res.error && res.error.message ? res.error.message : res.message
+                })
+            }
+        }))
+    }
+    if(to.name == 'itech.spreadsheet.sheets.details'){
+        let payload = Object.assign(to.params, {range: "A1:J30"})
+        callData.push(store.dispatch(`getSheetDetailData`,payload).then((res)=>{
+            if(!res.ok){
+                store.dispatch(`addNotification`,{
+                    type: "error",
+                    message: res.error.message ? res.error.message : res.message
+                })
+            }
+        }))
+    }
+    if(to.name == 'itech.drive.files'){
+        callData.push(
+            store.dispatch(`getDriveFiles`,{id: to.params.id,fileId: to.params.driveFolderId})
+            .then((res)=>{
+                console.log(res)
+                return res
+            })
+        )
     }
     return Promise.all(callData)
     .catch((err)=>{
