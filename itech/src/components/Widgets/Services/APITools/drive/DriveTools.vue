@@ -8,7 +8,7 @@
                     <button class="px-3 py-2 mx-1 text-sm rounded-lg bg-slate-200 hover:bg-slate-300"
                         @click.stop="createPrep">Create</button>
                 </template>
-                <div class="px-2 rounded">
+                <div class="px-2 rounded overflow-y-auto">
                     <button @click.stop="chooseProjectService(drive.refId)"
                         class="w-full my-1 px-3 py-2 flex items-center justify-between rounded-lg bg-slate-100 cursor-pointer text-slate-800"
                         :class="driveFolderActiveClass(drive.refId)" v-for="drive in drives">

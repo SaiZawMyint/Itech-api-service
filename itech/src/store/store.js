@@ -1,6 +1,7 @@
 import {createStore} from 'vuex'
 import axiosClient from '../axios/axios'
 import itechObject from '../js/itech-objects'
+import itechAPI from '../js/itech-api'
 const userModule = {
     state: ()=>({
         data:{},
@@ -378,6 +379,23 @@ const driveFile = {
                 console.log(data)
                 if(data.ok) commit('putDriveFileData',data.data)
                 return data
+            }).catch((err)=>{
+                if(err.response && err.response.data) return err.response.data
+                return err
+            })
+        },
+        async downloadFile({commit},payload){
+            
+            return await axiosClient.get(`/drive/${payload.id}/drivefile/${payload.fileId}/download`,{
+               
+                responseType: "blob", // important
+                onDownloadProgress: (progressEvent) => {
+                    let percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total); // you can use this to show user percentage of file downloaded
+                    payload.loaded(percentCompleted)
+                }
+              })
+            .then((res)=>{
+                return res
             }).catch((err)=>{
                 if(err.response && err.response.data) return err.response.data
                 return err

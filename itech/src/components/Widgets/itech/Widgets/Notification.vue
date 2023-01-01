@@ -1,9 +1,18 @@
 <template>
     <div class="fixed bottom-[10px] right-[10px] flex flex-col gap-2 p-2 justify-start items-end" style="z-index: 999;">
-        <div class="relative px-3 py-2 rounded backdrop-blur-sm max-w-[400px] w-[fit-content] col-end-1 shadow text-sm pr-14"
+        <div class="relative px-3 py-2 rounded flex items-center justify-start backdrop-blur-sm max-w-[400px] w-[fit-content] col-end-1 shadow text-sm pr-14"
             v-for="(noti,index) in data" :class="[getNotiClass(noti).bg,getNotiClass(noti).color]">
-            {{noti.message}}
+
+            <div class="flex items-center mr-3 justify-center rounded-full" v-if="noti.progress">
+                <CricleProgressBar v-bind="noti.progress" />
+            </div>
+            
+            <span>{{noti.message}}</span>
+
+
+
             <button class="w-7 h-7 rounded-full flex items-center justify-center absolute right-1 top-1"
+            v-if="!noti.isMuted"
             :class="getNotiClass(noti).hover"
             @click="closeHandler(noti,index)">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -15,6 +24,8 @@
     </div>
 </template>
 <script setup>
+import CricleProgressBar from './CricleProgressBar.vue';
+
 const props = defineProps({
     data: {
         type: Array,

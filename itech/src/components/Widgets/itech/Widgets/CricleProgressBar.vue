@@ -3,14 +3,16 @@
         <svg id="svg" :width="size" :height="size" viewPort="0 0 100 100" version="1.1" xmlns="http://www.w3.org/2000/svg">
             <circle :style="`stroke-width: ${bar}px`" :r="(size / 2)" :cx="size / 2" :cy="size / 2"
                 stroke-dasharray="565.48" fill="transparent" stroke-dashoffset="0"
+                
                 :stroke="secondaryBarColor"></circle>
-            <circle id="bar" :r="(size / 2)" :cx="size / 2" :cy="size / 2" stroke-dasharray="565.48"
+            <circle id="bar" :r="(size / 2)" :cx="size / 2" :cy="size / 2"
                 :style="`stroke-width: ${bar}px;stroke-dasharray:${calculateDashOffset}px; stroke-dashoffset:${calculateDashArray}px`"
                 fill="transparent"
                 :stroke="primaryBarColor"
+                :class="isLoading ? `loading-progress`:''"
                 ></circle>
         </svg>
-        <span class="label" :style="`color: ${getFontColor}`">{{ labelText }}</span>
+        <span class="label" v-if="showLabel" :style="`color: ${getFontColor}`">{{ labelText }}</span>
     </div>
 </template>
 
@@ -49,6 +51,14 @@ import { ref } from 'vue';
         showInPercent: {
             type: Boolean,
             default: false
+        },
+        showLabel:{
+            type:Boolean,
+            default: true
+        },
+        isLoading: {
+            type: Boolean,
+            default: false
         }
     })
 
@@ -83,7 +93,9 @@ import { ref } from 'vue';
   transition: stroke-dashoffset 1s linear;
   stroke-width: 3%;
 }
-
+#svg{
+    transform: rotate(-90deg);
+}
 .progress-wrapper {
   display: block;
   overflow: hidden;
@@ -105,6 +117,16 @@ import { ref } from 'vue';
     display: flex;
     align-items: center;
     justify-content: center;
+}
+.loading-progress{
+    animation: loading reverse 2s infinite linear;
+    stroke-dasharray: 227;
+  stroke-dashoffset: 0;
+}
+@keyframes loading {
+    to{
+        stroke-dashoffset: 227;
+    }
 }
 
 </style>
