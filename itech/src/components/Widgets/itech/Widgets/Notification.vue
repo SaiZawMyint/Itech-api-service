@@ -9,8 +9,6 @@
             
             <span>{{noti.message}}</span>
 
-
-
             <button class="w-7 h-7 rounded-full flex items-center justify-center absolute right-1 top-1"
             v-if="!noti.isMuted"
             :class="getNotiClass(noti).hover"
