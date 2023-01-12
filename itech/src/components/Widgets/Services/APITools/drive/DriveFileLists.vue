@@ -23,7 +23,7 @@
                     <div v-if="filePop[index]" tabindex="-1"
                     :id="`btn-pop-${index}`"
                     @focusout="filePop[index] = false"
-                        class="absolute bg-gray-300/50 backdrop-blur top-[100%] -right-2 rounded ring-1 ring-slate-400 shadow flex flex-col">
+                        class="absolute bg-gray-300/80 backdrop-blur top-[100%] -right-2 rounded ring-1 ring-slate-400 shadow flex flex-col min-w-[160px]">
                         <button class="py-1 px-2 hover:text-gray-200 hover:bg-gray-700/50 border-b text-left flex items-center justify-start">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
                                 class="w-4 h-4 mr-2">
@@ -41,7 +41,7 @@
                             </svg>
                             <span>Download</span>
                         </button>
-                        <button class="py-1 px-2 hover:text-gray-200 hover:bg-red-700/50 border-b text-left flex items-center justify-start">
+                        <button class="py-1 px-2 hover:text-gray-200 hover:bg-red-700/50 border-b border-slate-600 text-left flex items-center justify-start">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
                                 class="w-4 h-4 mr-2">
                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -49,6 +49,25 @@
                             </svg>
                             <span>Delete</span>
                         </button>
+                        <span class="py-1 px-2 cursor-default border-b text-left flex items-center justify-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" 
+                            stroke="currentColor"
+                                class="w-4 h-4 mr-2">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+                            </svg>
+
+                            <span>{{ getFileSize(driveFile.size) }}</span>
+                        </span>
+                        <span class="py-1 px-2 cursor-default border-b text-left flex items-center justify-start">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+                                class="w-4 h-4 mr-2">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z" />
+                            </svg>
+
+                            <span>{{ driveFile.type }}</span>
+                        </span>
                     </div>
                 </Transition>
             </div>
@@ -71,6 +90,7 @@ import { useStore } from 'vuex';
 import {fileTypeLogo} from '../../../../../js/script'
 import itech from '../../../../../js/itech'
 import { onMounted, ref } from 'vue';
+import itechObject from '../../../../../js/itech-objects';
 
 const store = useStore()
 const route = useRoute()
@@ -87,7 +107,9 @@ const showPop = (index)=>{
     })
     
 }
-
+const getFileSize = (byte)=>{
+    return itechObject().byte(byte)
+}
 const progressData = ref({
             type: "noti",
             message: "Preparing to download file",

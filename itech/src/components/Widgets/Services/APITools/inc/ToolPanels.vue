@@ -89,7 +89,12 @@ const authorize = function(){
             code.value = ""
             switch(route.meta.service){
                 case "SPREADSHEET":{
-                    
+                    router.push({
+                        name: 'itech.spreadsheet.shome',
+                        params: {
+                            id: route.params.id
+                        }
+                    })
                 }break
                 case "DRIVE":{
                     router.push({
