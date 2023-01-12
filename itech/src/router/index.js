@@ -105,7 +105,6 @@ router.beforeEach((to, from, next) => {
 async function process(to,from){
     let callData = []
     if(to.meta && 'service' in to.meta){
-        console.log(to.params)
         switch(to.meta.service){
             case "SPREADSHEET":{
                 callData.push(checkTokenStatus(to.params.id))

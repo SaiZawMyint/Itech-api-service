@@ -6,6 +6,7 @@ import pdf from '../assets/img/icons/pdf-icon.png';
 import docx from '../assets/img/icons/docx-icon.png';
 import archive from '../assets/img/icons/archive-icon.png';
 import folder from '../assets/img/icons/folder-icon.svg';
+import video from '../assets/img/icons/video-icon.svg'
 
 export const spreadsheet = {
     getRange: (range = "")=>{
@@ -67,6 +68,9 @@ export const fileTypeLogo = (type)=>{
         }
         case "drive-folder":{
             return folder
+        }
+        case "video":{
+            return video
         }
         default:{
             return unknowFile

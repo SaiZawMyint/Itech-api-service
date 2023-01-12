@@ -54,7 +54,7 @@
 
 <script setup>
 import { onMounted, ref } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 import SpreadsheetTools from '../spreadsheet/SpreadsheetTools.vue';
 import ModalBox from '../../../LightUI/ModalBox.vue';
@@ -64,6 +64,7 @@ import DriveTools from '../drive/DriveTools.vue';
 
 const store = useStore()
 const route = useRoute()
+const router = useRouter()
 const tokenURL = ref("")
 const code = ref("")
 const tokenAlertBox=ref(store.state.auth.tokenAlertBox)
@@ -83,8 +84,22 @@ const openAuthorize = function(){
 const authorize = function(){
     store.dispatch('authorize',{service: route.meta.service,id: route.params.id, code: code.value}).then((res)=>{
         if(res.ok){
+            store.dispatch('clearNotifications')
             tokenAlertBox.value.show = false
             code.value = ""
+            switch(route.meta.service){
+                case "SPREADSHEET":{
+                    
+                }break
+                case "DRIVE":{
+                    router.push({
+                        name: 'itech.drive.shome',
+                        params: {
+                            id: route.params.id
+                        }
+                    })
+                }break
+            }
         }
     })
 }
