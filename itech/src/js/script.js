@@ -45,6 +45,7 @@ export const spreadsheet = {
     }
 }
 export const fileTypeLogo = (type)=>{
+    console.log(type)
     switch(type){
         case "txt":{
             return textFile

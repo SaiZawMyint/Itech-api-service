@@ -124,8 +124,8 @@ const download = (id)=>{
     }
     store.dispatch('downloadFile',payload).then((res)=>{
         progressData.value.message = "Downloaded"
+        progressData.value.isMuted = false
         progressData.value.progress.isLoading = false
-        
     })
 }
 onMounted(()=>{
