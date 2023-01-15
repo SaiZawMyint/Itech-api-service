@@ -16,6 +16,7 @@ import DriveFileLists from '../components/Widgets/Services/APITools/drive/DriveF
 import Detials from '../components/Widgets/Services/APITools/spreadsheet/sheet/Detials.vue'
 import store from '../store/store'
 
+import OpenFile from '../components/Prespectives/OpenFilePrespective.vue'
 
 const routes = [
     {
@@ -77,7 +78,13 @@ const routes = [
                     },
                     {
                         path: 'service/:driveFolderId?', 'name': 'itech.drive.files',component: DriveFileLists,
+                        children:[
+                            {
+                                path: 'open/:fileId', name : 'open-file', component: OpenFile
+                            }
+                        ]
                     },
+                    
                 ]
             },
             
@@ -163,11 +170,26 @@ async function process(to,from){
         callData.push(
             store.dispatch(`getDriveFiles`,{id: to.params.id,fileId: to.params.driveFolderId})
             .then((res)=>{
-                console.log(res)
+                if(!res.ok){
+                    console.log(res)
+                    store.dispatch(`addNotification`,{
+                        type: "error",
+                        message: res.message
+                    })
+                }
                 return res
             })
         )
     }
+
+    if(to.name === 'open-file'){
+        let payload = {
+            id: to.params.id,
+            fileId: to.params.fileId
+        }
+        callData.push(store.dispatch(`openPrespective`,payload))
+    }
+
     return Promise.all(callData)
     .catch((err)=>{
         console.log(err)

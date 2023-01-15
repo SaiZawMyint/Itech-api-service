@@ -376,10 +376,10 @@ const driveFile = {
         async getDriveFiles({commit}, payload = {id:null,fileId:null}){
             return axiosClient.get(`/drive/${payload.id}/drivefile/${payload.fileId}?files=${true}`)
             .then(({data})=>{
-                console.log(data)
                 if(data.ok) commit('putDriveFileData',data.data)
                 return data
             }).catch((err)=>{
+                commit('reset')
                 if(err.response && err.response.data) return err.response.data
                 return err
             })
@@ -395,6 +395,7 @@ const driveFile = {
                 }
               })
             .then((res)=>{
+                payload.success(res)
                 return res
             }).catch((err)=>{
                 if(err.response && err.response.data) return err.response.data
@@ -406,7 +407,34 @@ const driveFile = {
         putDriveFileData: (state, data)=>{
             state.file = data.file
             state.children = data.children
+        },
+        reset: (state)=>{
+            state.file = {},
+            state.children = []
         }
+    }
+}
+const prespectives = {
+    state: ()=>({
+        drivefile: {}
+    }),
+    actions:{
+       async openPrespective({state},payload){
+            return axiosClient.get(`/drive/${payload.id}/drivefile/${payload.fileId}/info`).then(({data})=>{
+                if(data.ok){
+                    state.drivefile = data.data
+                }else{
+                    state.drivefile = {}
+                }
+                return data
+            }).catch((err)=>{
+                if(err.response && err.response.data) return err.response.data
+                return err
+            })
+        }
+    },
+    mutations:{
+
     }
 }
 const store = createStore({
@@ -420,7 +448,8 @@ const store = createStore({
         sheet: sheetData,
         setting: setting,
         drive,
-        driveFile
+        driveFile,
+        prespectives
     }
 })
 

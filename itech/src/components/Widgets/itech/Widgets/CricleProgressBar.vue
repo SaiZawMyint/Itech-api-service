@@ -119,14 +119,18 @@ import { ref } from 'vue';
     justify-content: center;
 }
 .loading-progress{
-    animation: loading reverse 2s infinite linear;
+    animation: loading reverse 5s infinite linear;
     stroke-dasharray: 227;
-  stroke-dashoffset: 0;
+    stroke-dashoffset: 0;
 }
 @keyframes loading {
-    to{
+    0%,100%{
         stroke-dashoffset: 227;
     }
+    50%{
+        stroke-dashoffset: 0;
+    }
+    
 }
 
 </style>

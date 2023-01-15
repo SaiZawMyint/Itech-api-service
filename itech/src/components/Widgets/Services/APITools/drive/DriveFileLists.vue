@@ -1,7 +1,7 @@
 <template>
     <div class="w-full grid grid-cols-6 gap-2" v-if="'driveFolderId' in route.params && getDriveFileData">
         <button 
-        @dblclick="openSheet(driveFile)"
+        @dblclick="openFile(driveFile)"
         class="relative flex flex-col text-sm service-block m-2 rounded-lg shadow text-center ring-slate hover:ring-2 focus:ring-2 hover:shadow-md" 
         v-for="(driveFile,index) in getDriveFileData">
             <div class="w-full h-full flex items-center justify-center p-2">
@@ -65,7 +65,6 @@
                                 <path stroke-linecap="round" stroke-linejoin="round"
                                     d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z" />
                             </svg>
-
                             <span>{{ driveFile.type }}</span>
                         </span>
                     </div>
@@ -81,6 +80,11 @@
             </svg>
         </button>
     </div>
+    <router-view v-slot="{ Component }">
+        <transition name="alert">
+            <component :is="Component" />
+        </transition>
+    </router-view>
 </template>
 
 <script setup>
@@ -91,6 +95,7 @@ import {fileTypeLogo} from '../../../../../js/script'
 import itech from '../../../../../js/itech'
 import { onMounted, ref } from 'vue';
 import itechObject from '../../../../../js/itech-objects';
+import router from '../../../../../router';
 
 const store = useStore()
 const route = useRoute()
@@ -106,6 +111,15 @@ const showPop = (index)=>{
         document.getElementById(`btn-pop-${index}`).focus()
     })
     
+}
+const openFile = (file)=>{
+    router.push({
+        name: 'open-file',
+        params:{
+            driveFolderId: route.params.driveFolderId,
+            fileId: file.id
+        }
+    })
 }
 const getFileSize = (byte)=>{
     return itechObject().byte(byte)
@@ -129,13 +143,24 @@ const download = (id)=>{
         id: route.params.id,
         fileId: id
     }
-    store.dispatch('clearNotifications').then(() => {
-        store.dispatch(`addNotification`, progressData.value)
+    const newNotiProps = ref({
+        type: "noti",
+        message: "Preparing to download file",
+        progress: {
+            progress: 0,
+            size: 35,
+            primaryBarColor: "#076857",
+            fontColor: "black",
+            showLabel: false,
+            isLoading: true
+        },
+        isMuted: true
     })
-
+    store.dispatch(`addNotification`, newNotiProps.value)
+   
     payload.loaded = (percentage)=>{
-        progressData.value.message = "Downloading"
-        progressData.value.progress={
+        newNotiProps.value.message = "Downloading"
+        newNotiProps.value.progress={
                 progress: percentage,
                 size: 35,
                 primaryBarColor: "#076857",
@@ -144,12 +169,16 @@ const download = (id)=>{
                 isLoading: false
             }
     }
+    payload.success = (res)=>{
+
+    }
     store.dispatch('downloadFile',payload).then((res)=>{
-        progressData.value.message = "Downloaded"
-        progressData.value.isMuted = false
-        progressData.value.progress.isLoading = false
+        newNotiProps.value.message = "Downloaded"
+        newNotiProps.value.isMuted = false
+        newNotiProps.value.progress.isLoading = false
     })
 }
+
 onMounted(()=>{
     if(getDriveFileData.value.length > 0){
         getDriveFileData.value.forEach(()=>{
