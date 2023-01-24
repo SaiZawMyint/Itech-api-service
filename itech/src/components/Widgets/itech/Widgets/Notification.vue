@@ -2,7 +2,8 @@
     <div class="fixed bottom-[10px] right-[10px] flex flex-col gap-2 p-2 justify-start items-end" style="z-index: 999;">
         <div class="relative px-3 border-2 py-2 rounded flex items-center justify-start backdrop-blur-sm max-w-[400px] w-[fit-content] col-end-1 shadow text-sm pr-14"
             v-for="(noti,index) in data" :class="[getNotiClass(noti).bg,getNotiClass(noti).color]"
-            @click="openNoti">
+            @click="openNoti"
+            :id="`itech-noti-${noti.id}`">
 
             <div class="flex items-center mr-3 justify-center rounded-full" v-if="noti.progress">
                 <CricleProgressBar v-bind="noti.progress" />
@@ -21,6 +22,7 @@
     </div>
 </template>
 <script setup>
+import itech from '../../../../js/itech';
 import CricleProgressBar from './CricleProgressBar.vue';
 
 const props = defineProps({
@@ -31,7 +33,13 @@ const props = defineProps({
 })
 const emits = defineEmits(['close','open'])
 const closeHandler = function(noti,index){
-    emits('close',{index,id:noti.id})
+    let el = document.getElementById(`itech-noti-${noti.id}`)
+    itech().wait(40,()=>{
+        el.classList.add('close-noti')
+    },()=>{
+        emits('close',{index,id:noti.id})
+    })
+    
 }
 const openNoti = ()=>{
     if(data.openAction){
@@ -70,3 +78,17 @@ const getNotiClass =(noti)=>{
     return cls;
 }
 </script>
+<style>
+.close-noti{
+    transition: all .2s linear;
+    animation: closenoti .4s 1 linear;
+}
+@keyframes closenoti {
+    from{
+        transform: translateX(0);
+    }
+    to{
+        transform: translateX(100%);
+    }
+}
+</style>
