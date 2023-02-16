@@ -8,6 +8,8 @@ import archive from '../assets/img/icons/archive-icon.png';
 import folder from '../assets/img/icons/folder-icon.svg';
 import video from '../assets/img/icons/video-icon.svg'
 
+export const BASE_API_URL = `http://localhost:8001/itech/api`
+
 export const spreadsheet = {
     getRange: (range = "")=>{
         if(!range.includes("!") || !range.includes(":")) return null;
@@ -78,4 +80,8 @@ export const fileTypeLogo = (type)=>{
         }
     }
 }
-export default {spreadsheet,fileTypeLogo}
+export const getImageData = (pid,id)=>{
+    return `${BASE_API_URL}/drive/${pid}/drivefile/photo/${id}?u_token=${sessionStorage.getItem('TOKEN')}`
+}
+
+export default {spreadsheet,fileTypeLogo,BASE_API_URL}

@@ -1,7 +1,8 @@
 import axios from "axios";
+import { BASE_API_URL } from "../js/script";
 
 const axiosClient = axios.create({
-    baseURL: `http://localhost:8001/itech/api`
+    baseURL: BASE_API_URL
 })
 axiosClient.interceptors.request.use(config=>{
     config.headers.Authorization = `Bearer ${sessionStorage.getItem('TOKEN')}`

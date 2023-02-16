@@ -11,7 +11,8 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
-      '@img': path.resolve(__dirname, './src/assets/img')
+      '@img': path.resolve(__dirname, './src/assets/img'),
+      '@js': path.resolve(__dirname,'./src/js')
     }
   }
 })

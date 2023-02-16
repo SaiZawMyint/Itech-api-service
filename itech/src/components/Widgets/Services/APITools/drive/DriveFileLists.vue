@@ -2,11 +2,20 @@
     <div class="w-full grid grid-cols-6 gap-2" v-if="'driveFolderId' in route.params && getDriveFileData">
         <button 
         @dblclick="openFile(driveFile)"
-        class="relative flex flex-col text-sm service-block m-2 rounded-lg shadow text-center ring-slate hover:ring-2 focus:ring-2 hover:shadow-md" 
+        @contextmenu.prevent="showPop(index)"
+        class="relative border-sky border-2 flex flex-col text-sm service-block m-2 rounded-lg shadow text-center ring-slate hover:ring-2 focus:ring-2 hover:shadow-md" 
         v-for="(driveFile,index) in getDriveFileData">
-            <div class="w-full h-full flex items-center justify-center p-2">
-                <img :src="fileTypeLogo(driveFile.type)" alt="" style="max-width: 80%;">
+            <div class="overflow-hidden w-full h-full flex flex-col rounded-lg">
+                <div class="relative w-full h-full flex items-center justify-center p-2 relative overflow-hidden min-h-[110px] rounded-lg">
+                    <img :src="getImageData(route.params.id, driveFile.id)" alt="" v-if="driveFile.type == 'image'"
+                        class="w-full preview-img">
+                    <img :src="fileTypeLogo(driveFile.type)" alt="" class="max-h-[130px]" style="max-width: 80%;" v-else>
+                    <div v-if="driveFile.type == 'image'" class="absolute top-0 left-0 none bg-gray-300/90 backdrop-blue-sm w-full h-full flex justify-center items-center">
+                        <img src="@img/icons/loading-ball.svg" alt="loading" class="w-8 h-8">
+                    </div>
+                </div>
             </div>
+            
             <div class="w-full bg-gray-100 px-3 py-2 truncate">
                 {{driveFile.name}}
             </div>
@@ -24,7 +33,7 @@
                     :id="`btn-pop-${index}`"
                     @focusout="filePop[index] = false"
                         class="absolute bg-gray-300/80 backdrop-blur top-[100%] -right-2 rounded ring-1 ring-slate-400 shadow flex flex-col min-w-[160px]">
-                        <button class="py-1 px-2 hover:text-gray-200 hover:bg-gray-700/50 border-b text-left flex items-center justify-start">
+                        <button @click="openFile(driveFile)" class="py-1 px-2 hover:text-gray-200 hover:bg-gray-700/50 border-b text-left flex items-center justify-start">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
                                 class="w-4 h-4 mr-2">
                                 <path stroke-linecap="round" stroke-linejoin="round"
@@ -91,12 +100,12 @@
 import { computed } from '@vue/reactivity';
 import { useRoute } from 'vue-router';
 import { useStore } from 'vuex';
-import {fileTypeLogo} from '../../../../../js/script'
+import {fileTypeLogo, getImageData} from '../../../../../js/script'
 import itech from '../../../../../js/itech'
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 import itechObject from '../../../../../js/itech-objects';
 import router from '../../../../../router';
-
+import imgFails from '@img/icons/img-fails.svg'
 const store = useStore()
 const route = useRoute()
 
@@ -112,14 +121,30 @@ const showPop = (index)=>{
     })
     
 }
+const getParams = (id)=>{
+    let param = Object.assign({},route.params)
+    param.driveFolderId = id
+
+    return param
+}
+
 const openFile = (file)=>{
-    router.push({
-        name: 'open-file',
-        params:{
-            driveFolderId: route.params.driveFolderId,
-            fileId: file.id
+    console.log(file)
+    switch(file.type){
+        case 'drive-folder':{
+            router.push({name: 'itech.drive.files',params:getParams(file.id)})
+        }break;
+        default:{
+            router.push({
+                name: 'open-file',
+                params: {
+                    driveFolderId: route.params.driveFolderId,
+                    fileId: file.id
+                }
+            })
         }
-    })
+    }
+    
 }
 const getFileSize = (byte)=>{
     return itechObject().byte(byte)
@@ -178,13 +203,31 @@ const download = (id)=>{
         newNotiProps.value.progress.isLoading = false
     })
 }
-
+//image loading
+const loadingImg = ()=>{
+    let imgs = document.querySelectorAll('.preview-img')
+    for(let img of imgs){
+        img.parentElement.lastElementChild.classList.remove('hidden')
+        img.parentElement.lastElementChild.removeAttribute('title')
+        img.onload = function(){
+            this.parentElement.lastElementChild.classList.add('hidden')
+        }
+        img.onerror = function(){
+            this.parentElement.lastElementChild.firstElementChild.src=imgFails
+            this.parentElement.lastElementChild.title = "Cannot load image!"
+        }
+    }
+}
 onMounted(()=>{
     if(getDriveFileData.value.length > 0){
         getDriveFileData.value.forEach(()=>{
             filePop.value.push(false)
         })
     }
+    loadingImg()
+})
+watch(()=>route.params.driveFolderId, ()=>{
+    loadingImg()
 })
 </script>
 

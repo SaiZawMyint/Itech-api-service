@@ -195,7 +195,17 @@ input::-webkit-inner-spin-button {
     top: 60%;
     animation: fade 1s reverse;
 }
-
+.img-dis img{
+    height: 100%;
+    width: auto;
+    
+}
+.preview-img{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
 @keyframes fade {
     from {
         opacity: 0;
