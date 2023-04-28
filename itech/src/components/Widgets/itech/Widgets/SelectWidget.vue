@@ -1,6 +1,6 @@
 <template>
   <div class="relative" @mousedown.prevent="">
-    <button class="px-2 w-full py-1 bg-white backdrop-blur-sm rounded-lg flex items-center justify-between"
+    <button type="button" class="px-2 w-full py-1 bg-white backdrop-blur-sm rounded-lg flex items-center justify-between"
     @click="toggleShow"
     >
       <label class="text-sm px-2">{{selectedList.name}}</label>
@@ -15,7 +15,9 @@
       <div :class="max.height" v-if="editorData.show" tabindex="-1" ref="selectBox" @blur.prevent="editorData.show = false"
        @mousedown.prevent=""
         class="flex overflow-y-auto text-sm flex-col w-full absolute top-[110%] rounded shadow-lg bg-white/50 border-2 outline-0 border-gray-300 shadow-lg backdrop-blur focus:outline-none">
-        <button 
+        <div class="px-2 py-1 border-b-2 w-full flex items-center select-options justify-between" v-if="lists.length == 0">There is no data.</div>
+        <button v-else
+        type="button"
         class="px-2 py-1 border-b-2 w-full flex items-center select-options justify-between" v-for="(list , index) in lists"
         :class="activeClass(index)"
         :data-comment="commentData(index)"
@@ -40,20 +42,7 @@ import itech from '../../../../js/itech';
 const props = defineProps({
     data: {
         type: Array,
-        default: [
-            {
-                id: 0,
-                name: "List 1"
-            },
-            {
-                id: 1,
-                name: "List 2"
-            },
-            {
-                id: 2,
-                name: "List 3"
-            }
-        ]
+        default: []
     },
     placeholder: {
       type: String,

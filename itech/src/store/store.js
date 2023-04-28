@@ -1,62 +1,62 @@
-import {createStore} from 'vuex'
+import { createStore } from 'vuex'
 import axiosClient from '../axios/axios'
 import itechObject from '../js/itech-objects'
 import itechAPI from '../js/itech-api'
 const userModule = {
-    state: ()=>({
-        data:{},
+    state: () => ({
+        data: {},
         token: sessionStorage.getItem("TOKEN"),
         emailVerified: false
     }),
     actions: {
-        async login({commit},data){
-            return axiosClient.post('/auth/login',data).then(({data})=>{
-                if(data.ok) commit('storeLoginData',data)
+        async login({ commit }, data) {
+            return axiosClient.post('/auth/login', data).then(({ data }) => {
+                if (data.ok) commit('storeLoginData', data)
                 return data;
-            }).catch((err)=>{
-                return {ok:false,error:err.response.data.message}
+            }).catch((err) => {
+                return { ok: false, error: err.response.data.message }
             })
         }
     },
     mutations: {
-        storeLoginData: (state,data)=>{
+        storeLoginData: (state, data) => {
             state.data = data
             state.token = data.data.accessToken
-            sessionStorage.setItem("TOKEN",data.data.accessToken)
+            sessionStorage.setItem("TOKEN", data.data.accessToken)
         }
     }
 }
 const servicesModule = {
-    state: ()=>({
+    state: () => ({
         type: '',
         data: {},
     }),
     actions: {
-        addService({commit},service = {data:'',type: ''}){
-            if(service) commit('storeService',service)
+        addService({ commit }, service = { data: '', type: '' }) {
+            if (service) commit('storeService', service)
         }
     },
-    mutations:{
-        storeService: (state,service)=>{
+    mutations: {
+        storeService: (state, service) => {
             state.data = service.data
             state.type = service.type
         }
     }
 }
 const projectModule = {
-    state: ()=>({
-        data:{}
+    state: () => ({
+        data: {}
     }),
     actions: {
-        async createProject({commit}, payload){
-            return axiosClient.post('/project',payload).then(({data})=>{
-                if(data.ok) commit('storeProject', data.data)
+        async createProject({ commit }, payload) {
+            return axiosClient.post('/project', payload).then(({ data }) => {
+                if (data.ok) commit('storeProject', data.data)
                 return data
-            }).catch((err)=>{
+            }).catch((err) => {
                 return err.response.data
             })
         },
-        async getSpreadsheetProjects({commit}){
+        async getSpreadsheetProjects({ commit }) {
             return axiosClient.get('/project').then(({ data }) => {
                 if (data.ok) commit('putProject', data.data)
                 return data
@@ -64,19 +64,19 @@ const projectModule = {
                 return { ok: false, error: err }
             })
         },
-        
+
     },
     mutations: {
-        storeProject: (state,data)=>{
+        storeProject: (state, data) => {
             console.log(data)
-            for(let key in state.data){
-                for(let d of state.data[key]){
+            for (let key in state.data) {
+                for (let d of state.data[key]) {
                     delete d.active
                 }
             }
-            state.data[data.serviceType].push(Object.assign(data, {active: true}))
+            state.data[data.serviceType].push(Object.assign(data, { active: true }))
         },
-        putProject: (state,data)=>{
+        putProject: (state, data) => {
             console.log(data)
             state.data = data
         }
@@ -84,7 +84,7 @@ const projectModule = {
 }
 
 const spreadsheetModule = {
-    state: ()=>({
+    state: () => ({
         data: [],
         sheets: {
             id: '',
@@ -92,111 +92,115 @@ const spreadsheetModule = {
         }
     }),
     actions: {
-        async getSpreadsheets({commit}, id){
-            return axiosClient.get(`/spreadsheet/${id}/`).then(({data})=>{
-                if(data.ok) commit('storeSpreadsheetProjects',data.data)
+        async getSpreadsheets({ commit }, id) {
+            return axiosClient.get(`/spreadsheet/${id}/`).then(({ data }) => {
+                if (data.ok) commit('storeSpreadsheetProjects', data.data)
                 return data
-            }).catch((err)=>{
+            }).catch((err) => {
                 console.log(err)
                 return err.response.data
             })
         },
-        async getSpreadsheetsData({commit},payload = {id: 0,service: '',spreadsheetId:""}){
-            if(!payload.spreadsheetId){
+        async getSpreadsheetsData({ commit }, payload = { id: 0, service: '', spreadsheetId: "" }) {
+            if (!payload.spreadsheetId) {
                 commit('clearSheetData');
                 return false;
             }
-            return axiosClient.get(`/spreadsheet/${payload.id}/${payload.spreadsheetId}/sheets`).then(({data})=>{
-                if(data.ok) commit('storeSheets',{spreadsheetId: payload.spreadsheetId,data: data.data});
+            return axiosClient.get(`/spreadsheet/${payload.id}/${payload.spreadsheetId}/sheets`).then(({ data }) => {
+                if (data.ok) commit('storeSheets', { spreadsheetId: payload.spreadsheetId, data: data.data });
                 return data;
-            }).catch((err)=>{
-                if(err.response && err.response.data) return err.response.data
+            }).catch((err) => {
+                if (err.response && err.response.data) return err.response.data
                 return err
             })
         },
-        async createSpreadsheet({commit},payload){
-            return axiosClient.post(`/spreadsheet/${payload.id}/create`, payload.payload).then(({data})=>{
+        async createSpreadsheet({ commit }, payload) {
+            return axiosClient.post(`/spreadsheet/${payload.id}/create`, payload.payload).then(({ data }) => {
                 console.log(data)
-                if(data.ok) commit('putSpreadsheetData',data.data)
+                if (data.ok) commit('putSpreadsheetData', data.data)
                 return data;
-            }).catch((err)=>{
+            }).catch((err) => {
                 console.log(err)
-                if(err.response && err.response.data) return err.response.data
+                if (err.response && err.response.data) return err.response.data
                 return err
             })
         },
-        async importSpreadsheet({commit},payload){
-            return axiosClient.post(`/spreadsheet/${payload.id}/import`, payload.payload).then(({data})=>{
+        async importSpreadsheet({ commit }, payload) {
+            return axiosClient.post(`/spreadsheet/${payload.id}/import`, payload.payload).then(({ data }) => {
                 console.log(data)
-                if(data.ok) commit('putSpreadsheetData',data.data)
+                if (data.ok) commit('putSpreadsheetData', data.data)
                 return data;
-            }).catch((err)=>{
-                if(err.response && err.response.data) return err.response.data
+            }).catch((err) => {
+                if (err.response && err.response.data) return err.response.data
                 return err
             })
         },
-        async updateSpreadsheet({commit},payload){
-            return axiosClient.put(`/spreadsheet/${payload.id}/${payload.spreadsheetId}`, payload.payload).then(({data})=>{
-                if(data.ok) commit('updateSpreadsheetData',data.data)
+        async updateSpreadsheet({ commit }, payload) {
+            return axiosClient.put(`/spreadsheet/${payload.id}/${payload.spreadsheetId}`, payload.payload).then(({ data }) => {
+                if (data.ok) commit('updateSpreadsheetData', data.data)
                 return data;
-            }).catch((err)=>{
+            }).catch((err) => {
                 return err.response
             })
         },
-        async deleteSpreadsheet({commit},setting = {pid: 0,spreadsheetId: ''}){
-            return axiosClient.delete(`/spreadsheet/${setting.pid}/${setting.spreadsheetId}`).then(({data})=>{
-                if(data.ok) commit('removeSpreadsheet',setting.spreadsheetId);
+        async deleteSpreadsheet({ commit }, setting = { pid: 0, spreadsheetId: '' }) {
+            return axiosClient.delete(`/service/${setting.pid}/${setting.spreadsheetId}`, {
+                headers: {
+                    "Service-Type": "SPREADSHEET"
+                }
+            }).then(({ data }) => {
+                if (data.ok) commit('removeSpreadsheet', setting.spreadsheetId);
                 return data
             })
         },
-        async createSheet({commit},payload){
-            return axiosClient.post(`/spreadsheet/${payload.id}/${payload.spreadsheetId}/sheets`, payload.payload).then(({data})=>{
+        async createSheet({ commit }, payload) {
+            return axiosClient.post(`/spreadsheet/${payload.id}/${payload.spreadsheetId}/sheets`, payload.payload).then(({ data }) => {
                 console.log(data)
-                if(data.ok) commit('putSheetData',{id: payload.spreadsheetId,data:data.data.sheet})
+                if (data.ok) commit('putSheetData', { id: payload.spreadsheetId, data: data.data.sheet })
                 return data;
-            }).catch((err)=>{
-                if(err.response && err.response.data) return err.response.data
+            }).catch((err) => {
+                if (err.response && err.response.data) return err.response.data
                 return err
             })
         },
-        async updateSheet({commit},payload){
-            return axiosClient.put(`/spreadsheet/${payload.id}/${payload.spreadsheetId}/${payload.sheetId}`, payload.payload).then(({data})=>{
-                if(data.ok) commit('updateSheetData',{id: payload.spreadsheetId,data:data.data})
+        async updateSheet({ commit }, payload) {
+            return axiosClient.put(`/spreadsheet/${payload.id}/${payload.spreadsheetId}/${payload.sheetId}`, payload.payload).then(({ data }) => {
+                if (data.ok) commit('updateSheetData', { id: payload.spreadsheetId, data: data.data })
                 return data;
-            }).catch((err)=>{
-                if(err.response && err.response.data) return err.response.data
+            }).catch((err) => {
+                if (err.response && err.response.data) return err.response.data
                 return err
             })
         },
     },
     mutations: {
-        storeSpreadsheetProjects: (state,data) =>{
+        storeSpreadsheetProjects: (state, data) => {
             state.data = data;
         },
-        storeSheets: (state,data)=>{
+        storeSheets: (state, data) => {
             console.log(data)
             state.sheets = data
         },
-        clearSheetData: (state)=>{
+        clearSheetData: (state) => {
             state.sheets = {}
         },
-        putSpreadsheetData: (state,data) =>{
+        putSpreadsheetData: (state, data) => {
             state.data.push(data)
         },
-        updateSpreadsheetData: (state,data)=>{
-            let index = itechObject(state.data).find(data.refId,'refId');
-            console.log(index,data,state.data)
+        updateSpreadsheetData: (state, data) => {
+            let index = itechObject(state.data).find(data.refId, 'refId');
+            console.log(index, data, state.data)
             state.data[index] = data
         },
-        removeSpreadsheet: (state,spreadsheetId)=>{
-            let index = itechObject(state.data).find(spreadsheetId,'refId');
-            state.data.splice(index,1)
+        removeSpreadsheet: (state, spreadsheetId) => {
+            let index = itechObject(state.data).find(spreadsheetId, 'refId');
+            state.data.splice(index, 1)
         },
-        putSheetData: (state,data)=>{
+        putSheetData: (state, data) => {
             state.sheets.data.data.push(data.data)
         },
-        updateSheetData: (state,data) =>{
-            let index = itechObject(state.sheets.data.data).find(data.data.sheetId,"sheetId")
+        updateSheetData: (state, data) => {
+            let index = itechObject(state.sheets.data.data).find(data.data.sheetId, "sheetId")
             state.sheets.data.data[index] = {
                 "name": data.data.name,
                 "sheetId": data.data.sheetId
@@ -206,28 +210,28 @@ const spreadsheetModule = {
 }
 
 const sheetData = {
-    state: ()=>({
+    state: () => ({
         data: {}
     }),
     actions: {
-        async getSheetDetailData({commit},payload){
+        async getSheetDetailData({ commit }, payload) {
             return axiosClient.get(
-                `/spreadsheet/${payload.id}/${payload.spreadsheetId}/${payload.sheetId}?range=${payload.range}`)
-                .then(({data}) => {
-                    if(data.ok) commit('putSheetDetailData',data.data)
+                    `/spreadsheet/${payload.id}/${payload.spreadsheetId}/${payload.sheetId}?range=${payload.range}`)
+                .then(({ data }) => {
+                    if (data.ok) commit('putSheetDetailData', data.data)
                     return data
                 })
         }
     },
     mutations: {
-        putSheetDetailData: (state,data)=>{
+        putSheetDetailData: (state, data) => {
             state.data = data
         }
     }
 }
 
 const authModule = {
-    state: ()=>({
+    state: () => ({
         status: true,
         tokenAlertBox: {
             show: false,
@@ -235,207 +239,229 @@ const authModule = {
         }
     }),
     actions: {
-        async requestAuth({commit},id){
-            return axiosClient.get(`/auth/request/code/${id}?service=SPREADSHEET`).then((res)=>{
+        async requestAuth({ commit }, id) {
+            return axiosClient.get(`/auth/request/code/${id}?service=SPREADSHEET`).then((res) => {
                 console.log(res)
                 return res.data
             })
         },
-        async authorize({commit},data){
+        async authorize({ commit }, data) {
             const configs = {
-                headers:{
+                headers: {
                     service: data.service
                 }
             }
-            return axiosClient.post(`/auth/authorize/${data.id}`,{'code':data.code},configs).then(({data})=>{
+            return axiosClient.post(`/auth/authorize/${data.id}`, { 'code': data.code }, configs).then(({ data }) => {
                 return data
-            }).catch((err)=>{
+            }).catch((err) => {
                 return err
             })
         },
-        async checkStatus({commit},id){
-            return axiosClient.get(`/auth/${id}/status`).then(({data})=>{
+        async checkStatus({ commit }, id) {
+            return axiosClient.get(`/auth/${id}/status`).then(({ data }) => {
                 console.log(data)
-                commit('status',data)
+                commit('status', data)
                 return data
-            }).catch((err)=>{
-                commit('status',err.response.data)
+            }).catch((err) => {
+                commit('status', err.response.data)
                 return err.response.data
             })
         }
     },
     mutations: {
-        status: (state,data)=>{
+        status: (state, data) => {
             console.log(data)
             state.status = data.ok
         }
     }
 }
 const notificationModule = {
-    state: ()=>({
+    state: () => ({
         data: []
     }),
     actions: {
-        putNotification({commit},data){
-            commit('putNoti',data)
+        putNotification({ commit }, data) {
+            commit('putNoti', data)
         },
-        addNotification({commit},data){
-            commit('addNoti',data)
+        addNotification({ commit }, data) {
+            commit('addNoti', data)
         },
-        clearNotifications({commit}){
+        clearNotifications({ commit }) {
             commit('clearNotifications')
         },
-        removeNotification({commit},index){
-            commit('removeNotification',index)
+        removeNotification({ commit }, index) {
+            commit('removeNotification', index)
         }
     },
     mutations: {
-        putNoti:(state,data)=>{
+        putNoti: (state, data) => {
             state.data = data
         },
-        addNoti:(state,data)=>{
+        addNoti: (state, data) => {
             let id = state.data.length;
-            state.data.push(Object.assign(data,{id: id}))
+            state.data.push(Object.assign(data, { id: id }))
         },
-        clearNotifications: (state)=>{
+        clearNotifications: (state) => {
             state.data = []
         },
-        removeNotification: (state,index)=>{
-            state.data.splice(index,1)
+        removeNotification: (state, index) => {
+            state.data.splice(index, 1)
         }
     }
 }
 const setting = {
-    state: ()=>({
+    state: () => ({
         progress: false
     })
 }
 const drive = {
-    state: ()=>({
-        user:null,
-        storageQuota:null,
-        drive:{
-            folders:[]
+    state: () => ({
+        user: null,
+        storageQuota: null,
+        drive: {
+            folders: []
         }
     }),
-    actions:{
-        async getDriveInfo({commit},id){
-            return axiosClient.get(`/drive/${id}/info`).then(({data})=>{
-                if(data.ok) commit('driveInfo',data.data)
+    actions: {
+        async getDriveInfo({ commit }, id) {
+            return axiosClient.get(`/drive/${id}/info`).then(({ data }) => {
+                if (data.ok) commit('driveInfo', data.data)
                 return data
-            }).catch(err=>{
+            }).catch(err => {
                 return err
             })
         },
-        async getDriveFolders({commit}, id){
-            return axiosClient.get(`/drive/${id}/folders`).then(({data})=>{
-                if(data.ok) commit('putFolderData',data.data)
+        async getDriveFolders({ commit }, id) {
+            return axiosClient.get(`/drive/${id}/folders`).then(({ data }) => {
+                if (data.ok) commit('putFolderData', data.data)
                 return data
             })
-        }
-        ,
-        async createDriveFolder({commit},payload){
-            return axiosClient.post(`/drive/${payload.id}/folder/create`,payload.payload)
-            .then(({data})=>{
-                if(data.ok) commit('addFolderData',data.data)
+        },
+        async createDriveFolder({ commit }, payload) {
+            return axiosClient.post(`/drive/${payload.id}/folder/create`, payload.payload)
+                .then(({ data }) => {
+                    if (data.ok) commit('addFolderData', data.data)
+                    return data
+                }).catch((err) => {
+                    if (err.response && err.response.data) return err.response.data
+                    return err
+                })
+        },
+        async importDriveFolder({ commit }, payload) {
+            return axiosClient.post(`/drive/${payload.id}/folders/import`, payload.payload).then(({ data }) => {
+                if (data.ok) commit('addFolderData', data.data)
                 return data
-            }).catch((err)=>{
-                if(err.response && err.response.data) return err.response.data
+            }).catch((err) => {
+                if (err.response && err.response.data) return err.response.data
                 return err
             })
         },
-        async importDriveFolder({commit}, payload){
-            return axiosClient.post(`/drive/${payload.id}/folders/import`,payload.payload).then(({data})=>{
-                if(data.ok) commit('addFolderData',data.data)
+        async deleteDriveProjectFolder({ commit }, setting = { pid: 0, driveId: '' }) {
+            return axiosClient.delete(`/service/${setting.pid}/${setting.driveId}`, {
+                headers: {
+                    "Service-Type": "DRIVE"
+                }
+            }).then(({ data }) => {
+                if (data.ok) commit('removeDrive', setting.driveId);
                 return data
-            }).catch((err)=>{
-                if(err.response && err.response.data) return err.response.data
-                return err
             })
-        }
+        },
     },
-    mutations:{
-        driveInfo: (state,data)=>{
+    mutations: {
+        driveInfo: (state, data) => {
             state.user = data.user
             state.storageQuota = data.storageQuota
         },
-        putFolderData: (state,data)=>{
+        putFolderData: (state, data) => {
             state.drive.folders = data
         },
-        addFolderData: (state,data)=>{
+        addFolderData: (state, data) => {
             state.drive.folders.push(data)
+        },
+        removeDrive: (state, driveId) => {
+            let index = itechObject(state.data).find(driveId, 'refId');
+            state.drive.folders.splice(index, 1)
         }
     }
 }
 const driveFile = {
-    state: ()=>({
+    state: () => ({
         file: {},
         children: []
     }),
-    actions:{
-        async getDriveFiles({commit}, payload = {id:null,fileId:null}){
+    actions: {
+        async getDriveFiles({ commit }, payload = { id: null, fileId: null }) {
             return axiosClient.get(`/drive/${payload.id}/drivefile/${payload.fileId}?files=${true}`)
-            .then(({data})=>{
-                if(data.ok) commit('putDriveFileData',data.data)
-                return data
-            }).catch((err)=>{
-                commit('reset')
-                if(err.response && err.response.data) return err.response.data
-                return err
-            })
+                .then(({ data }) => {
+                    if (data.ok) commit('putDriveFileData', data.data)
+                    return data
+                }).catch((err) => {
+                    commit('reset')
+                    if (err.response && err.response.data) return err.response.data
+                    return err
+                })
         },
-        async downloadFile({commit},payload){
-            
-            return await axiosClient.get(`/drive/${payload.id}/drivefile/${payload.fileId}/download`,{
-               
-                responseType: "blob", // important
-                onDownloadProgress: (progressEvent) => {
-                    let percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total); // you can use this to show user percentage of file downloaded
-                    payload.loaded(percentCompleted)
+        async downloadFile({ commit }, payload) {
+
+            return await axiosClient.get(`/drive/${payload.id}/drivefile/${payload.fileId}/download`, {
+
+                    responseType: "blob", // important
+                    onDownloadProgress: (progressEvent) => {
+                        let percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total); // you can use this to show user percentage of file downloaded
+                        payload.loaded(percentCompleted)
+                    }
+                })
+                .then((res) => {
+                    payload.success(res)
+                    return res
+                }).catch((err) => {
+                    if (err.response && err.response.data) return err.response.data
+                    return err
+                })
+        }
+    },
+    mutations: {
+        putDriveFileData: (state, data) => {
+            state.file = data.file
+            state.children = data.children
+        },
+        reset: (state) => {
+            state.file = {},
+                state.children = []
+        }
+    }
+}
+const prespectives = {
+    state: () => ({
+        drivefile: {}
+    }),
+    actions: {
+        async openPrespective({ state }, payload) {
+            return axiosClient.get(`/drive/${payload.id}/drivefile/${payload.fileId}/info`).then(({ data }) => {
+                if (data.ok) {
+                    state.drivefile = data.data
+                } else {
+                    state.drivefile = {}
                 }
-              })
-            .then((res)=>{
-                payload.success(res)
-                return res
-            }).catch((err)=>{
-                if(err.response && err.response.data) return err.response.data
+                return data
+            }).catch((err) => {
+                if (err.response && err.response.data) return err.response.data
                 return err
             })
         }
     },
     mutations: {
-        putDriveFileData: (state, data)=>{
-            state.file = data.file
-            state.children = data.children
-        },
-        reset: (state)=>{
-            state.file = {},
-            state.children = []
-        }
-    }
-}
-const prespectives = {
-    state: ()=>({
-        drivefile: {}
-    }),
-    actions:{
-       async openPrespective({state},payload){
-            return axiosClient.get(`/drive/${payload.id}/drivefile/${payload.fileId}/info`).then(({data})=>{
-                if(data.ok){
-                    state.drivefile = data.data
-                }else{
-                    state.drivefile = {}
-                }
-                return data
-            }).catch((err)=>{
-                if(err.response && err.response.data) return err.response.data
-                return err
-            })
-        }
-    },
-    mutations:{
 
     }
+}
+const multiSelect = {
+    state: () => ({
+        data: [],
+        enable: false,
+        target: null
+    }),
+    actions: {},
+    mutations: {}
 }
 const store = createStore({
     modules: {
@@ -449,7 +475,8 @@ const store = createStore({
         setting: setting,
         drive,
         driveFile,
-        prespectives
+        prespectives,
+        multiSelect
     }
 })
 

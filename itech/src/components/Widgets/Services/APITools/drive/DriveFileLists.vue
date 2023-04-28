@@ -3,6 +3,7 @@
         <button 
         @dblclick="openFile(driveFile)"
         @contextmenu.prevent="showPop(index)"
+        @click="select(driveFile,index)"
         class="relative border-sky border-2 flex flex-col text-sm service-block m-2 rounded-lg shadow text-center ring-slate hover:ring-2 focus:ring-2 hover:shadow-md" 
         v-for="(driveFile,index) in getDriveFileData">
             <div class="overflow-hidden w-full h-full flex flex-col rounded-lg">
@@ -79,6 +80,11 @@
                     </div>
                 </Transition>
             </div>
+            <div @contextmenu.stop="" v-if="fileSelect[index]" class="absolute ring-2 ring-green-600 top-0 left-0 bg-gray-300/10 backdrop-blur-sm rounded w-full h-full">
+                <span class="absolute top-[3px] right-[3px] rounded-full w-10 h-10 flex items-center justify-center">
+                    <font-awesome-icon icon="fas fa-check-circle" class="w-6 h-6" color="#0ca678"/>
+                </span>
+            </div>
         </button>
         <button 
         @click="showBox"
@@ -110,7 +116,7 @@ const store = useStore()
 const route = useRoute()
 
 const filePop = ref([])
-
+const fileSelect = ref([])
 const getDriveFileData = computed(()=>{
     return store.state.driveFile.children
 })
@@ -149,20 +155,17 @@ const openFile = (file)=>{
 const getFileSize = (byte)=>{
     return itechObject().byte(byte)
 }
-const progressData = ref({
-            type: "noti",
-            message: "Preparing to download file",
-            progress: {
-                progress: 0,
-                size: 35,
-                primaryBarColor: "#076857",
-                fontColor: "black",
-                showLabel: false,
-                isLoading: true
-            },
-            isMuted: true
-        })
-
+const select = (file,index)=>{
+    if(store.state.multiSelect.enable){
+        if (fileSelect.value[index]) {
+            store.state.multiSelect.data = itechObject(store.state.multiSelect.data).remove(file.id);
+            fileSelect.value[index] = false
+        } else {
+            store.state.multiSelect.data.push(file.id)
+            fileSelect.value[index] = true
+        }   
+    }
+}
 const download = (id)=>{
     let payload = {
         id: route.params.id,
@@ -229,16 +232,9 @@ onMounted(()=>{
 watch(()=>route.params.driveFolderId, ()=>{
     loadingImg()
 })
+watch(()=>store.state.multiSelect.enable, (opt)=>{
+    if(!opt){
+        fileSelect.value.fill(false)
+    }
+})
 </script>
-
-<style scoped>
-.btn-pop-enter-active,
-.btn-pop-leave-active{
-    transition: all .4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-.btn-pop-enter-from,
-.btn-pop-leave-to{
-    opacity: 0;
-    top: 50%;
-}
-</style>

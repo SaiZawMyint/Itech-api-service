@@ -15,33 +15,55 @@
             </div>
         </div>
         <div class="w-full grid grid-cols-4 grid-flow-col gap-2">
-            <button class="rounded-lg max-w-[250px] ring-blue-300 focus:ring-2 overflow-hidden border-2 shadow flex flex-col m-4 cursor-pointer
-            hover:shadow-lg" @click="setup(`SPREADSHEET`)">
+            <button class="rounded-lg max-w-[250px] ring-blue-300 focus:ring-2 overflow-hidden border-2 shadow flex flex-col m-4 cursor-pointer justify-between
+            hover:shadow-lg" @click="setup(`SPREADSHEET`,`google`)">
                 <div class="w-full">
-                    <img src="@img/google-spreadsheet-api-logo.png" alt="" class="block w-full">
+                    <img src="@img/google-spreadsheet-api-logo.png" alt="" class="block w-full h-[230px]">
                 </div>
-                <div class="p-2">
+                <div class="p-2 bg-sky-100 w-full">
                     <h2 class="px-2">Google Spreadsheet API</h2>
                 </div>
             </button>
             <button 
-            @click="setup(`DRIVE`)"
-            class="rounded-lg max-w-[250px] ring-blue-300 focus:ring-2 overflow-hidden border-2 shadow flex flex-col m-4 cursor-pointer
+            @click="setup(`DRIVE`,`google`)"
+            class="rounded-lg max-w-[250px] ring-blue-300 focus:ring-2 overflow-hidden border-2 shadow flex flex-col m-4 cursor-pointer justify-between
             hover:shadow-lg">
                 <div class="w-full">
-                    <img src="@img/google-drive-api-logo.png" alt="" class="block w-full">
+                    <img src="@img/google-drive-api-logo.png" alt="" class="block w-full h-[230px]">
                 </div>
-                <div class="p-2">
+                <div class="p-2 bg-sky-100 w-full">
                     <h2 class="px-2">Google Drive API</h2>
+                </div>
+            </button>
+            <button 
+            @click="setup(`FACEBOOK`,`facebook`)"
+            class="rounded-lg max-w-[250px] ring-blue-300 focus:ring-2 overflow-hidden border-2 shadow flex flex-col m-4 cursor-pointer justify-between
+            hover:shadow-lg">
+                <div class="w-full">
+                    <img src="@img/facebook-api-icon.png" alt="" class="block w-full h-[230px]">
+                </div>
+                <div class="p-2 bg-sky-100 w-full">
+                    <h2 class="px-2">Facebook API</h2>
+                </div>
+            </button>
+            <button 
+            @click="setup(`SHOPIFY`,`shopify`)"
+            class="rounded-lg max-w-[250px] ring-blue-300 focus:ring-2 overflow-hidden border-2 shadow flex flex-col m-4 cursor-pointer justify-between
+            hover:shadow-lg">
+                <div class="w-full">
+                    <img src="@img/shopify-api-icon.png" alt="" class="block w-full h-[230px]">
+                </div>
+                <div class="p-2 bg-sky-100 w-full">
+                    <h2 class="px-2">Shopify API</h2>
                 </div>
             </button>
         </div>
     </div>
     <Transition name="alert">
         <ModalBox :title="setUpBox.title" height="min-h-[300px]" v-if="setUpBox.show" :show="setUpBox.show"
-            @on-close="setUpBox.show = false" width="w-[40%]">
+            @on-close="setUpBox.show = false" width="w-[50%]">
             <template v-slot:content>
-                <div class="w-full p-4 relative z-10">
+                <div class="w-full p-4 relative z-10 min-h-[260px]">
                     <div class="my-2" v-if="!showCreateForm">
                         <span class="text-sm px-2 text-gray-400">Select Project</span>
                         <SelectWidget :data="projectsData.data[setUpBox.title]" :max="{height:'max-h-[150px]'}"
@@ -50,28 +72,11 @@
                     </div>
                     <form @submit.prevent="createProject" class="my-4 px-2" id="create-project-form"
                         v-if="showCreateForm">
-                        <div class="flex">
-                            <div class="w-[30%] pr-2">
-                                <label for="pj-name" class="text-slate-700 my-2 text-sm">Project Name</label>
-                                <input v-model="createProjectForm.name" name="project-name" id="pj-name" type="text"
-                                    class="px-3 py-2 rounded text-sm w-full" placeholder="Name">
-                            </div>
-                            <div class="w-[70%] pl-2">
-                                <label for="pj-json" class="text-slate-700 my-2 text-sm">Google Client Json</label>
-                                <input @change="projectJSON" name="file"
-                                    class="block w-full ring-slate-200 p-1 ring-2 text-sm text-gray-900 border border-gray-300 rounded-lg overflow-hidden cursor-pointer bg-slate-50 focus:outline-none"
-                                    id="pj-json" type="file" accept="application/JSON">
-                            </div>
-                        </div>
-
+                        <CreateNewGoogleProject :create-project-form="createProjectForm" @file-change="projectJSON" v-if="setUpBox.organization == `google`" />
+                        <CreateFacebookProject :create-project-form="createProjectForm" v-if="setUpBox.organization == `facebook`" />
                         <div class="w-full py-4 flex items-center">
                             <button type="submit"
                                 class="p-2 bg-slate-300 hover:bg-slate-300/40 text-slate-800 rounded-md flex items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                                    <path stroke-linecap="round" stroke-linejoin="round"
-                                        d="M12 9v6m3-3H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
                                 <span class="px-2">Create</span>
                             </button>
                             <span class="px-2 text-sm" :class="createWatcher.error ? 'text-red-800':'text-green-800'"
@@ -79,7 +84,7 @@
                         </div>
                     </form>
                     <a href="#" @click.prevent="showCreateForm = !showCreateForm"
-                        class="px-2 block pt-4 text-sm text-blue-400 underline">{{showCreateForm ? "ChooseProject":"Create Project"}}</a>
+                        class="px-2 block py-1 text-sm text-blue-400 underline">{{showCreateForm ? "ChooseProject":"Create Project"}}</a>
                 </div>
             </template>
             <template v-slot:footer>
@@ -92,7 +97,7 @@
                     <span v-else
                         class="px-4 py-2 ring-slate-200 ring-2 rounded-lg ml-4 bg-slate-400 text-slate-800 cursor-not-allowed">
                         Select
-                        </span>
+                    </span>
                 </div>
             </template>
         </ModalBox>
@@ -107,6 +112,8 @@ import { useStore } from 'vuex';
 import itech from '../../../js/itech';
 import { useRouter } from 'vue-router'
 import { computed } from '@vue/reactivity';
+import CreateNewGoogleProject from '../itech/UI/google/CreateGoogleProject.vue';
+import CreateFacebookProject from '../itech/UI/facebook/CreateFacebookProject.vue';
 
 const store = useStore()
 const router = useRouter()
@@ -114,7 +121,8 @@ const router = useRouter()
 const setUpBox = ref({
     show: false,
     title: '',
-    type: ''
+    type: '',
+    organization: ''
 });
 const showCreateForm = ref(false)
 
@@ -142,12 +150,14 @@ const changesHandler = function(data){
     projectsData.value.data[index] = data
 }
 
-const setup = function(service){
+const setup = function(service, organization){
     setUpBox.value.show = true;
     setUpBox.value.title = service
+    setUpBox.value.organization = organization
 }
 const projectJSON = function(e){
     const [file] = e.target.files
+    console.log(`files: ${file}`)
     itechObject().json(file,(data)=>{
         for(let web in data){ //first web layer
             let clients = data[web]

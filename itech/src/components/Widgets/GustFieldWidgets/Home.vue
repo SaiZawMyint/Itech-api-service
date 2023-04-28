@@ -38,58 +38,70 @@
                         </div>
                     </div>
                 </div>
-                <div class="w-[80%] mx-auto grid grid-cols-3 gap-4 items-center justify-center my-8">
-                    <div class="flex overflow-hidden rounded-lg shadow">
+                <div class="w-[80%] mx-auto grid grid-cols-3 gap-4 items-stretch justify-center my-8">
+                    <div class="flex overflow-hidden rounded-lg shadow ring-2 ring-sky-200">
                         <div class="w-[50%] api-icon-v google-api"></div>
-                        <div class="w-full text-left p-2 bg-slate-100">
-                            <h3 class="font-bold text-slate-800">Google Service</h3>
-                            <p class="text-sm mt-2">
-                                Google Spreadsheets
-                            </p>
-                            <div class="flex items-center justify-start mt-4 text-sm">
-                                <button
-                                    class="truncate max-w-[30%] overflow-hidden px-2 py-1 bg-slate-300 quick-start rounded-lg mr-2 font-bold text-slate-800 ring-inset focus:ring-2">
-                                    Doc
-                                </button>
-                                <button class="px-2 py-1 btn quick-start rounded mx-2 ring-inset focus:ring-2">
-                                    Quick Start
-                                </button>
+                        <div class="w-full h-full text-left p-2 bg-slate-100">
+                            <div class="w-full h-full flex flex-col justify-between">
+                                <div class="w-full">
+                                    <h3 class="font-bold text-slate-800">Google Service</h3>
+                                    <p class="text-sm mt-2">
+                                        Spreadsheets and Drive Tools
+                                    </p>
+                                </div>
+                                <div class="flex items-center justify-start mt-4 text-sm">
+                                    <button
+                                        class="truncate max-w-[30%] overflow-hidden px-3 py-2 bg-slate-300 quick-start rounded-lg mr-2 font-bold text-slate-800 ring-inset focus:ring-2">
+                                        Doc
+                                    </button>
+                                    <button class="px-3 py-2 btn quick-start rounded-lg mx-2 ring-inset focus:ring-2">
+                                        Quick Start
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="flex overflow-hidden rounded-lg shadow">
+                    <div class="flex overflow-hidden rounded-lg shadow ring-2 ring-sky-200">
                         <div class="w-[50%] api-icon-v facebook-api"></div>
-                        <div class="w-full text-left p-2 bg-slate-100">
-                            <h3 class="font-bold text-slate-800">Google Service</h3>
-                            <p class="text-sm mt-2">
-                                Google Spreadsheets
-                            </p>
-                            <div class="flex items-center justify-start mt-4 text-sm">
-                                <button
-                                    class="truncate max-w-[30%] overflow-hidden px-2 py-1 bg-slate-300 quick-start rounded-lg mr-2 font-bold text-slate-800 ring-inset focus:ring-2">
-                                    Doc
-                                </button>
-                                <button class="px-2 py-1 btn quick-start rounded mx-2 ring-inset focus:ring-2">
-                                    Quick Start
-                                </button>
+                        <div class="w-full h-full text-left p-2 bg-slate-100">
+                            <div class="w-full h-full flex flex-col justify-between">
+                                <div class="w-full">
+                                    <h3 class="font-bold text-slate-800">Facebook Service</h3>
+                                    <p class="text-sm mt-2">
+                                        Marketing API, Page and Account Management Tools
+                                    </p>
+                                </div>
+                                <div class="flex items-center justify-start mt-4 text-sm">
+                                    <button
+                                        class="truncate max-w-[30%] overflow-hidden px-3 py-2 bg-slate-300 quick-start rounded-lg mr-2 font-bold text-slate-800 ring-inset focus:ring-2">
+                                        Doc
+                                    </button>
+                                    <button class="px-3 py-2 btn quick-start rounded-lg mx-2 ring-inset focus:ring-2">
+                                        Quick Start
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="flex overflow-hidden rounded-lg shadow">
+                    <div class="flex overflow-hidden rounded-lg shadow ring-2 ring-sky-200">
                         <div class="w-[50%] api-icon-v shopify-api"></div>
-                        <div class="w-full text-left p-2 bg-slate-100">
-                            <h3 class="font-bold text-slate-800">Google Service</h3>
-                            <p class="text-sm mt-2">
-                                Google Spreadsheets
-                            </p>
-                            <div class="flex items-center justify-start mt-4 text-sm">
-                                <button
-                                    class="truncate max-w-[30%] overflow-hidden px-2 py-1 bg-slate-300 quick-start rounded-lg mr-2 font-bold text-slate-800 ring-inset focus:ring-2">
-                                    Doc
-                                </button>
-                                <button class="px-2 py-1 btn quick-start rounded mx-2 ring-inset focus:ring-2">
-                                    Quick Start
-                                </button>
+                        <div class="w-full h-full text-left p-2 bg-slate-100">
+                            <div class="w-full h-full flex flex-col justify-between">
+                                <div class="w-full">
+                                    <h3 class="font-bold text-slate-800">Shopify Service</h3>
+                                    <p class="text-sm mt-2">
+                                        Admin, Store, Customer and Product Management Tools
+                                    </p>
+                                </div>
+                                <div class="flex items-center justify-start mt-4 text-sm">
+                                    <button
+                                        class="truncate max-w-[30%] overflow-hidden px-3 py-2 bg-slate-300 quick-start rounded-lg mr-2 font-bold text-slate-800 ring-inset focus:ring-2">
+                                        Doc
+                                    </button>
+                                    <button class="px-3 py-2 btn quick-start rounded-lg mx-2 ring-inset focus:ring-2">
+                                        Quick Start
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>

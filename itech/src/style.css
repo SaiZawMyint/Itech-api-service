@@ -1,7 +1,6 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
 @font-face {
     font-family: 'poppin';
     src: url('./assets/font/Poppins-Regular.ttf');
@@ -28,7 +27,6 @@ body * {
 
 input:focus {
     outline: none;
-
 }
 
 ::-webkit-scrollbar {
@@ -167,7 +165,7 @@ input::-webkit-inner-spin-button {
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%,-50%);
+    transform: translate(-50%, -50%);
     transition: all .2s;
     box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .15) !important;
 }
@@ -179,7 +177,7 @@ input::-webkit-inner-spin-button {
 }
 
 .alert-enter-active {
-    animation: fade 0.2s ;
+    animation: fade 0.2s;
 }
 
 .alert-leave-active {
@@ -195,22 +193,34 @@ input::-webkit-inner-spin-button {
     top: 60%;
     animation: fade 1s reverse;
 }
-.img-dis img{
+
+.img-dis img {
     height: 100%;
     width: auto;
-    
 }
-.preview-img{
+
+.preview-img {
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%,-50%);
+    transform: translate(-50%, -50%);
 }
+
+.btn-pop-enter-active,
+.btn-pop-leave-active {
+    transition: all .4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.btn-pop-enter-from,
+.btn-pop-leave-to {
+    opacity: 0;
+    top: 50%;
+}
+
 @keyframes fade {
     from {
         opacity: 0;
     }
-
     to {
         opacity: 1;
     }
@@ -220,11 +230,9 @@ input::-webkit-inner-spin-button {
     0% {
         transform: scale(0);
     }
-
     50% {
         transform: scale(1.15);
     }
-
     100% {
         transform: scale(1);
     }
@@ -257,26 +265,24 @@ input::-webkit-inner-spin-button {
         right: 100%;
         width: 0%;
     }
-
     10% {
         left: 0%;
         right: 75%;
         width: 25%;
     }
-
     90% {
         right: 0%;
         left: 75%;
         width: 25%;
     }
-
     100% {
         left: 100%;
         right: 0%;
         width: 0%;
     }
 }
-.float-noti{
+
+.float-noti {
     position: absolute;
     top: 3px;
     right: 3px;
@@ -284,28 +290,36 @@ input::-webkit-inner-spin-button {
     height: 8px;
     border-radius: 50%;
 }
-.float-noti.alert{
+
+.float-noti.alert {
     background-color: var(--unseen-noti-color);
 }
-#tool-panel-hider{
+
+#tool-panel-hider {
     transition: all .2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
-#tool-panel-hider svg{
+
+#tool-panel-hider svg {
     pointer-events: none;
 }
-#tool-panel-hider.active{
+
+#tool-panel-hider.active {
     transform: rotate(180deg);
 }
-#tool-panel{
+
+#tool-panel {
     transition: all .2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
-#tool-panel.hide{
+
+#tool-panel.hide {
     width: 0 !important;
 }
-#tool-dashboard{
+
+#tool-dashboard {
     transition: all .2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
-#tool-dashboard.wide{
+
+#tool-dashboard.wide {
     width: 100% !important;
     margin-left: 0 !important;
 }
