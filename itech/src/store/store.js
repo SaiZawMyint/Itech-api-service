@@ -50,6 +50,7 @@ const projectModule = {
     actions: {
         async createProject({ commit }, payload) {
             return axiosClient.post('/project', payload).then(({ data }) => {
+                console.log(data)
                 if (data.ok) commit('storeProject', data.data)
                 return data
             }).catch((err) => {
@@ -68,7 +69,7 @@ const projectModule = {
     },
     mutations: {
         storeProject: (state, data) => {
-            console.log(data)
+            console.log("ss" + data)
             for (let key in state.data) {
                 for (let d of state.data[key]) {
                     delete d.active

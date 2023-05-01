@@ -10,6 +10,7 @@
             </div>
             <SpreadsheetTools v-if="getServiceTools.isSpreadsheetService()" :id="route.params.id" />
             <DriveTools v-if="getServiceTools.isDriveService()" :id="route.params.id"/>
+            <FacebookTools v-if="getServiceTools.isFacebookService()"  />
         </div>
         <button
         id="tool-panel-hider"
@@ -61,6 +62,7 @@ import ModalBox from '../../../LightUI/ModalBox.vue';
 import itechDom from '../../../../../js/itech-dom'
 import { computed } from '@vue/reactivity';
 import DriveTools from '../drive/DriveTools.vue';
+import FacebookTools from '../facebook/FacebookTools.vue';
 
 const store = useStore()
 const route = useRoute()
@@ -122,6 +124,9 @@ const getServiceTools = computed(()=>{
         },
         isDriveService: ()=>{
             return route.meta.service === 'DRIVE'
+        },
+        isFacebookService: ()=>{
+            return route.meta.service === 'FACEBOOK'
         }
     }
 })

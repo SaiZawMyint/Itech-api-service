@@ -11,16 +11,16 @@
             <label for="app-Id" class="text-slate-700 my-2 text-sm">APP Id</label>
             <input v-model="createProjectForm.clientId" name="app-id" id="app-id" type="text"
                 class="px-3 py-2 rounded text-sm w-full" placeholder="APP Id">
-            <a href="" class="text-sm underline text-sky-500">How to get APP Id?</a>
+            <a href="" class="text-sm underline text-sky-500">How to get facebook APP Id?</a>
         </div>
         <div class="w-[50%] pl-1">
             <label for="app-secret" class="text-slate-700 my-2 text-sm">APP Secret</label>
-            <input v-model="createProjectForm.name" name="app-secret" id="app-secret" type="text"
+            <input v-model="createProjectForm.clientSecret" name="app-secret" id="app-secret" type="text"
                 class="px-3 py-2 rounded text-sm w-full" placeholder="APP Secret">
-            <a href="" class="text-sm underline text-sky-500">How to get APP secret?</a>
+            <a href="" class="text-sm underline text-sky-500">How to get facebook APP secret?</a>
         </div>
     </div>
-    <div class="flex justify-between items-center mb-2">
+    <!-- <div class="flex justify-between items-center mb-2">
         <div class="w-full">
             <label class="text-slate-700 my-2 text-sm">Scopes</label>
             <Multiselect
@@ -33,7 +33,7 @@
                 />
             <a href="" class="text-sm underline text-sky-500">What are the scopes and permissions?</a>
         </div>
-    </div>
+    </div> -->
 </template>
 <script setup>
 import {FACEBOOK_SCOPES} from '@js/script.js';

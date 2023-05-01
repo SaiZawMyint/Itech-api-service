@@ -185,6 +185,7 @@ const createWatcher = ref({
 })
 const createProject = function(){
     store.dispatch('createProject',Object.assign({'serviceType':setUpBox.value.title},createProjectForm.value)).then((res)=>{
+        console.log(res)
         if(res.ok){
             document.getElementById('create-project-form').reset()
             createProjectForm.value = {}
@@ -217,6 +218,9 @@ const getServiceName = computed(()=>{
         }
         case "DRIVE":{
             return 'itech.drive.shome'
+        }
+        case "FACEBOOK":{
+            return 'itech.fb.shome'
         }
         default: {
             return 'home'
