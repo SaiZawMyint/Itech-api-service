@@ -4,7 +4,7 @@
             <DropMenu title="Google Drive" classes="bg-slate-100" :expend="true" :max="{ height: 'max-h-[400px]' }">
                 <template v-slot:helper-btn>
                     <button class="px-3 py-2 mx-1 text-sm rounded-lg bg-slate-200 hover:bg-slate-300"
-                        @click.stop="importAlertBox.show = true">Import</button>
+                        @click.stop="openImportDriveFolders">Import</button>
                     <button class="px-3 py-2 mx-1 text-sm rounded-lg bg-slate-200 hover:bg-slate-300"
                         @click.stop="createPrep">Create</button>
                 </template>
@@ -76,8 +76,8 @@
                         <div class="border-b py-1 border-1 flex items-center justify-between">
                             <div class="flex items-center">
                                 <div class="w-8 h-8 rounded-full flex items-center justify-center">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="#3cb371"
-                                        class="w-5 h-5">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke-width="2" stroke="#3cb371" class="w-5 h-5">
                                         <path stroke-linecap="round" stroke-linejoin="round"
                                             d="M2.25 15a4.5 4.5 0 004.5 4.5H18a3.75 3.75 0 001.332-7.257 3 3 0 00-3.758-3.848 5.25 5.25 0 00-10.233 2.33A4.502 4.502 0 002.25 15z" />
                                     </svg>
@@ -103,19 +103,23 @@
                             <div class="w-[80%] mx-auto text-sm">
                                 <div class="flex items-center my-2 justify-between">
                                     <span class="w-[50%] truncate">Limit</span>
-                                    <span class="w-[50%] truncate text-right text-slate-800">{{ getDriveStorage.limit}}</span>
+                                    <span class="w-[50%] truncate text-right text-slate-800">{{
+                                        getDriveStorage.limit}}</span>
                                 </div>
                                 <div class="flex items-center my-2 justify-between">
                                     <span class="w-[50%] truncate">Usage</span>
-                                    <span class="w-[50%] truncate text-right text-slate-800">{{ getDriveStorage.usage}}</span>
+                                    <span class="w-[50%] truncate text-right text-slate-800">{{
+                                        getDriveStorage.usage}}</span>
                                 </div>
                                 <div class="flex items-center my-2 justify-between">
                                     <span class="w-[50%] truncate">Usage in Drive</span>
-                                    <span class="w-[50%] truncate text-right text-slate-800">{{getDriveStorage.usageInDrive}}</span>
+                                    <span
+                                        class="w-[50%] truncate text-right text-slate-800">{{getDriveStorage.usageInDrive}}</span>
                                 </div>
                                 <div class="flex items-center my-2 justify-between">
                                     <span class="w-[50%] truncate">Usage in Drive Trash</span>
-                                    <span class="w-[50%] truncate text-right text-slate-800">{{getDriveStorage.usageInDriveTrash}}</span>
+                                    <span
+                                        class="w-[50%] truncate text-right text-slate-800">{{getDriveStorage.usageInDriveTrash}}</span>
                                 </div>
                             </div>
                         </div>
@@ -125,12 +129,13 @@
         </div>
     </div>
     <Transition name="alert">
-        <ModalBox :title="createDriveFolderOption.isEditing? 'Rename a folder': 'Create a folder'" v-if="createDriveFolderOption.show" :show="createDriveFolderOption.show"
+        <ModalBox :title="createDriveFolderOption.isEditing? 'Rename a folder': 'Create a folder'"
+            v-if="createDriveFolderOption.show" :show="createDriveFolderOption.show"
             @on-close="createDriveFolderOption.show = false" width="w-[400px]">
             <template v-slot:icon>
                 <div class="w-10 h-10 mt-7 flex items-center bg-green-500/80 text-gray-100 justify-center rounded-full">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-                        class="w-6 h-6">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                        stroke="currentColor" class="w-6 h-6">
                         <path stroke-linecap="round" stroke-linejoin="round"
                             d="M12 10.5v6m3-3H9m4.06-7.19l-2.12-2.12a1.5 1.5 0 00-1.061-.44H4.5A2.25 2.25 0 002.25 6v12a2.25 2.25 0 002.25 2.25h15A2.25 2.25 0 0021.75 18V9a2.25 2.25 0 00-2.25-2.25h-5.379a1.5 1.5 0 01-1.06-.44z" />
                     </svg>
@@ -139,14 +144,15 @@
             <template v-slot:content>
                 <p class="text-center">{{createModalText}} Drive Folder</p>
                 <form @submit.prevent="createNewDriveFolder" class="p-2 w-[80%] mx-auto mb-2">
-                    <input v-model="driveFolderInput.value" type="text" class="appereance-none px-3 py-2 w-full rounded-lg" placeholder="Spreadsheet name">
+                    <input v-model="driveFolderInput.value" type="text"
+                        class="appereance-none px-3 py-2 w-full rounded-lg" placeholder="Spreadsheet name">
                     <div class="flex items-center justify-center p-4">
-                        <button 
-                        type="submit"
-                        v-if="driveFolderInput.value && !driveFolderInput.valid" class="px-4 py-2 ring-slate-200 ring-2 rounded-lg ml-4 btn primary">{{createModalText}}</button>
+                        <button type="submit" v-if="driveFolderInput.value && !driveFolderInput.valid"
+                            class="px-4 py-2 ring-slate-200 ring-2 rounded-lg ml-4 btn primary">{{createModalText}}</button>
                         <span v-else
                             class="flex items-center jsutify-between px-3 py-2 ring-slate-200 ring-2 rounded-lg ml-4 bg-slate-400 text-slate-800 cursor-not-allowed">
-                            <img src="@img/loading-icon.svg" alt="" class="w-6 h-6 mr-2" v-if="createDriveFolderOption.loading">
+                            <img src="@img/loading-icon.svg" alt="" class="w-6 h-6 mr-2"
+                                v-if="createDriveFolderOption.loading">
                             <span>{{createModalText}}</span>
                         </span>
                     </div>
@@ -156,30 +162,38 @@
     </Transition>
     <Transition name="alert">
         <ModalBox title="Import Drive Folders" v-if="importAlertBox.show" :show="importAlertBox.show"
-            @on-close="importAlertBox.show = false" width="w-[400px]">
-            <template v-slot:icon>
-                <div class="w-10 h-10 mt-7 flex items-center bg-green-600/80 text-gray-100 justify-center rounded-full">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                        stroke="currentColor" class="w-6 h-6">
-                        <path stroke-linecap="round"
-                            d="M16.5 12a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zm0 0c0 1.657 1.007 3 2.25 3S21 13.657 21 12a9 9 0 10-2.636 6.364M16.5 12V8.25" />
-                    </svg>
-                </div>
-            </template>
+            @on-close="importAlertBox.show = false" width="w-[60%]">
             <template v-slot:content>
-                <p class="p-2 text-center text-slate-400 text-sm">Please import your Drive Folder Id</p>
-                <div class="p-2 w-[70%] mx-auto mb-4">
-                    <form @submit.prevent="importDriveFolder" class="flex  rounded-lg overflow-hidden ring-1 ring-slate-400 text-sm">
-                        <input v-model="importId" type="text" class="appereance-none px-3 py-2 w-full"
-                            placeholder="Folder Id">
-                        <button type="submit" class="px-3 hover:font-bold">Import</button>
-                    </form>
+                <div class="flex flex-row">
+                    <div class="w-full">
+                        <div class="w-full flex items-center justify-center">
+                            <div
+                            class="w-10 h-10 mt-7 flex items-center bg-green-600/80 text-gray-100 justify-center rounded-full">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                                stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round"
+                                    d="M16.5 12a4.5 4.5 0 11-9 0 4.5 4.5 0 019 0zm0 0c0 1.657 1.007 3 2.25 3S21 13.657 21 12a9 9 0 10-2.636 6.364M16.5 12V8.25" />
+                            </svg>
+                        </div>
+                        </div>
+                        <p class="p-2 text-center text-slate-400 text-sm">Please import your Drive Folder Id</p>
+                        <div class="p-2 w-[70%] mx-auto mb-4">
+                            <form @submit.prevent="importDriveFolder"
+                                class="flex  rounded-lg overflow-hidden ring-1 ring-slate-400 text-sm">
+                                <input v-model="importId" type="text" class="appereance-none px-3 py-2 w-full"
+                                    placeholder="Folder Id">
+                                <button type="submit" class="px-3 hover:font-bold">Import</button>
+                            </form>
+                        </div>
+                    </div>
+                    <accessible_foldler_view :id=props.id @on-selected="onImportFolderSelected" />
                 </div>
             </template>
         </ModalBox>
     </Transition>
     <Transition name="alert">
-        <ModalBox title="Delete Drive folder" v-if="deleteAlertBox.show" :show="deleteAlertBox.show" @on-close="deleteAlertBox.show = false">
+        <ModalBox title="Delete Drive folder" v-if="deleteAlertBox.show" :show="deleteAlertBox.show"
+            @on-close="deleteAlertBox.show = false">
             <template v-slot:icon>
                 <div class="w-10 h-10 mt-7 flex items-center bg-red-600/80 text-gray-100 justify-center rounded-full">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -214,6 +228,8 @@ import { useStore } from 'vuex';
 import ModalBox from '../../../LightUI/ModalBox.vue';
 import { useRoute, useRouter } from 'vue-router';
 import imageURL from '@img/logo.svg'
+import accessible_foldler_view from './inc/accessible_foldler_view.vue';
+
 const store = useStore()
 const route = useRoute()
 const router = useRouter()
@@ -221,7 +237,6 @@ const router = useRouter()
 const createDriveFolderOption = ref({show:false,isEditing: false,loading: false})
 const driveFolderInput = ref({value:'',valid: false,selectedId: null})
 const drives = toRef(store.state.drive.drive,'folders')
-console.log(drives.value)
 const importAlertBox=ref({
     show: false
 })
@@ -383,6 +398,15 @@ const deleteDriveProjectFolder = ()=>{
         }
         
     })
+}
+
+const openImportDriveFolders = ()=>{
+    importAlertBox.value.show = true
+    importId.value = ''
+}
+
+const onImportFolderSelected = (id) => {
+    importId.value = id
 }
 </script>
 

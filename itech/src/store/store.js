@@ -320,7 +320,12 @@ const drive = {
         user: null,
         storageQuota: null,
         drive: {
-            folders: []
+            folders: [],
+            accessible_folders: {
+                has_next: false,
+                next_page_token: null,
+                list: []
+            }
         }
     }),
     actions: {
@@ -367,6 +372,32 @@ const drive = {
                 return data
             })
         },
+        async getAccessibleFolders({commit}, setting = {pid: 0}){
+            return axiosClient.get(`/drive/${setting.pid}/accessible-folders`, {
+                headers:{
+                    "Service-Type": "DRIVE"
+                }
+            }).then(({data}) => {
+                if(data.ok) commit('addAccessibleFolders', data.data)
+                return data;
+            }).catch(err=>{
+                if (err.response && err.response.data) return err.response.data
+                return err
+            })
+        },
+        async getMoreAccessibleFolders({commit}, setting = {pid: 0, nextPageToken: ''}){
+            return axiosClient.get(`/drive/${setting.pid}/accessible-folders?next_page_token=${setting.nextPageToken}`, {
+                headers:{
+                    "Service-Type": "DRIVE"
+                }
+            }).then(({data}) => {
+                if(data.ok) commit('addMoreAccessibleFolders', data.data)
+                return data;
+            }).catch(err=>{
+                if (err.response && err.response.data) return err.response.data
+                return err
+            })
+        }
     },
     mutations: {
         driveInfo: (state, data) => {
@@ -382,6 +413,16 @@ const drive = {
         removeDrive: (state, driveId) => {
             let index = itechObject(state.data).find(driveId, 'refId');
             state.drive.folders.splice(index, 1)
+        },
+        addAccessibleFolders: (state, data) =>{
+            state.drive.accessible_folders = data
+        },
+        addMoreAccessibleFolders: (state, data) => {
+            console.table(data)
+            state.drive.accessible_folders.has_next = data.has_next
+            state.drive.accessible_folders.next_page_token = data.next_page_token
+            state.drive.accessible_folders.list.push(...data.list)
+            console.log(state.drive.accessible_folders)
         }
     }
 }

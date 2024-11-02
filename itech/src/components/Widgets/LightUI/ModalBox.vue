@@ -7,7 +7,6 @@
                     <span class="max-w-[80%] mx-auto truncate block">{{title}}</span>    
                 </h2>
             <div class="h-full flex flex-col overflow-auto">
-                
                 <div class="flex items-center justify-center">
                     <slot name="icon"></slot>
                 </div>
